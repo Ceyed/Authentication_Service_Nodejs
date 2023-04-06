@@ -1,5 +1,11 @@
-# Authentication Service
+# Authentication_Service
 A basic authentication service using NodeJs
+
+<br/>
+<br/>
+
+## General TODO:
+- [ ] A special status for 'expired token, needs to login again'
 
 <br/>
 <br/>
@@ -37,8 +43,6 @@ otherwise return false
 
 ## 3. Change Password
 Gets 'old password' && 'new password'
-They shouldn't be the same
-Check 'hashed old password' with 'saved password', then save 'hashed new password'
 return true || false
 
 <br/>
@@ -46,3 +50,5 @@ return true || false
 #### TODO
 - [x] 3.1: 'Old password' and 'new password' should not be identical
 - [ ] 3.2: Password Regex Validation: numb3r, special ch@r, UPPER, lower
+- [x] 3.3: 'Saved password' and 'hashed old password' should be identical
+- [x] 3.4: Save 'hashed new password'

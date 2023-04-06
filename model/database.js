@@ -330,47 +330,21 @@ async function saveToken(userId, token) {
     }
 }
 
-
-// async function login(username, email, password) {
-//     try {
-//         // * Create client object
-//         const client = new Client({
-//             host: "localhost",
-//             user: process.env.DB_USERNAME,
-//             port: process.env.DB_PORT,
-//             password: process.env.DB_PASSWORD,
-//             database: process.env.DB_DATABASE
-//         })
-
-//         // * Create connection to database
-//         await client.connect()
-
-//         // * Create table every time just incase
-//         await client.query(createUsersTableQuery)
-
-//         // * Login
-//         try {
-
-//         }
-//         catch {
-//             // * Close connection to database and return validation code
-//             await client.end()
-//             return false
-//         }
-//     }
-//     catch (error) {
-//         // console.error(error.stack)
-//         // TODO: Change lines bellow later, Please
-//         try {
-//             // * Close connection if there is any
-//             await client.end()
-//         }
-//         catch {
-
-//         }
-//         return 0
-//     }
-// }
+async function changePassword(userId, password) {
+    try {
+        const queryRespond = await runQuery(`UPDATE ${process.env.USERS_TABLE_NAME} SET password = '${password}' WHERE id = ${userId}`)
+        if (!queryRespond) {
+            return false
+        }
+        else {
+            return true
+        }
+    }
+    catch (error) {
+        // console.log(error);
+        return false
+    }
+}
 
 
 module.exports = {
@@ -381,4 +355,5 @@ module.exports = {
     findUser,
     newUser,
     saveToken,
+    changePassword,
 }
