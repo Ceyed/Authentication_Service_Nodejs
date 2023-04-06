@@ -27,6 +27,16 @@ const createUsersTableQuery = `
     )`
 
 
+const createForgotPasswordTableQuery = `
+    CREATE TABLE IF NOT EXISTS ${process.env.FORGOT_PASSWORD_TABLE_NAME} (
+        "id" SERIAL PRIMARY KEY,
+        "email" VARCHAR(50) NOT NULL,
+        "code" VARCHAR(8) DEFAULT '0',
+        "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        "modified_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`
+
+
 async function emailAlreadyValidated(userEmail) {
     try {
         // * Create client object

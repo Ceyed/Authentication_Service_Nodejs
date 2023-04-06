@@ -149,6 +149,18 @@ app.get('/reset_password', auth, async (request, response) => {
 })
 
 
+app.get('/forgot_password', auth, async (request, response) => {
+    try {
+        const user = await findUser(undefined, undefined, request.user.user_id)
+        // await sendCode(request, response, user.email)
+    }
+    catch (error) {
+        response.send('Error 8: Unexpected error accrued. Please contact admin')
+        return
+    }
+})
+
+
 app.get('/welcome', auth, (req, response) => {
     response.status(200).send('Welcome 🙌')
 })

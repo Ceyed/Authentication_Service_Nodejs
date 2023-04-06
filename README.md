@@ -52,3 +52,19 @@ return true || false
 - [ ] 3.2: Password Regex Validation: numb3r, special ch@r, UPPER, lower
 - [x] 3.3: 'Saved password' and 'hashed old password' should be identical
 - [x] 3.4: Save 'hashed new password'
+
+<br/>
+<br/>
+
+## 4. Forgot Password
+Send user an email containing a link and a code
+in either way, after receiving the code, get a new password from user
+save 'new hashed password' to database
+
+<br/>
+
+#### TODO
+- [ ] 4.1: Create temp code and save it in database
+- [ ] 4.2: Create a validation-link and email it to user along with the code itself
+- [ ] 4.3: After receiving the code (in either way) get a new password from user
+- [ ] 4.4: Save 'new hashed password' in database
