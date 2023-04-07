@@ -9,12 +9,15 @@ A basic authentication service using NodeJs
 - [ ] 0.2: All responses should have status code
 
 <br/>
-<br/>
 
 ## 1. Register
 Gets 'username' && 'email' && 'password'
 if user registered, return user + token
 if not, return false
+
+Requests           |    Method      |     Input                         |   Returns
+-------------------|----------------|-----------------------------------|------------------
+register           |    post        |    username, email, password      |  token || false
 
 <br/>
 
@@ -33,6 +36,10 @@ Gets ('username' || 'email') && 'password'
 return token if user founded
 otherwise return false
 
+Requests           |    Method      |     Input                         |   Returns
+-------------------|----------------|-----------------------------------|------------------
+login              |    post        |    username || email, password    |  token || false
+
 <br/>
 
 #### TODO
@@ -45,6 +52,11 @@ otherwise return false
 ## 3. Change Password
 Gets 'old password' && 'new password'
 return true || false
+
+Requests           |    Method      |     Input                             |   Returns
+-------------------|----------------|---------------------------------------|------------------
+change_password    |    post        |    token, old_password, new_password  |  token || false
+
 
 <br/>
 
@@ -62,6 +74,12 @@ Send user an email containing a link and a code
 in either way, after receiving the code, get a new password from user
 save 'new hashed password' to database
 
+Requests           |    Method      |     Input        |   Returns
+-------------------|----------------|------------------|------------------
+forgot_password    |    post        |    - (token)     |  true || false
+check_resetcode    |    get         |    reset code    |  true || false
+new_password       |    post        |    new password  |  true || false
+
 <br/>
 
 #### TODO
@@ -69,3 +87,22 @@ save 'new hashed password' to database
 - [x] 4.2: Create a validation-link and email it to user along with the code itself
 - [ ] 4.3: After receiving the code (in either way) get a new password from user
 - [ ] 4.4: Save 'new hashed password' in database
+
+<br/>
+<br/>
+
+## 5. Validate email
+Send user an email containing a link and a code
+in either way, after receiving the code, email validates
+
+Requests           |    Method      |     Input                     |   Returns
+-------------------|----------------|-------------------------------|------------------
+validate_email     |    post        |    validation_code, token     |  true || false
+validate_email     |    get         |    validation_code, token     |  true || false
+
+<br/>
+
+#### TODO
+- [ ] 5.1: Create temp code and save it in database
+- [ ] 5.2: Create a validation-link and email it to user along with the code itself
+- [ ] 5.3: After receiving the code (in either way) email gets validate

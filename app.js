@@ -122,7 +122,7 @@ app.post('/login', async (request, response) => {
 })
 
 
-app.post('/reset_password', auth, async (request, response) => {
+app.post('/change_password', auth, async (request, response) => {
     try {
         const user = await findUser(undefined, undefined, request.user.user_id)
 
@@ -154,7 +154,7 @@ app.post('/reset_password', auth, async (request, response) => {
 })
 
 
-app.post('/forgot_password', auth, async (request, response) => {                                        // TODO: Can it be Get method?
+app.post('/forgot_password', auth, async (request, response) => {
     try {
         const user = await findUser(undefined, undefined, request.user.user_id)
         const sendEmailResponse = await sendForgotPasswordCode(request, response, user.email)
@@ -169,9 +169,8 @@ app.post('/forgot_password', auth, async (request, response) => {               
         return response.status(400).send('An error accrued, Please try again')
     }
 })
-app.get('/new_password', async function (request, response) {
-    // const link = 'http://' + host + '/new_password?email=' + userEmail + '&reset_code=' + randomNumber
-})
+// app.get('/check_resetcode', auth, async function (request, response) {
+// })
 
 
 // app.get('/validate_email', async function (request, response) {
