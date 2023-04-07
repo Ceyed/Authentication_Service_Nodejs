@@ -3,6 +3,7 @@ require('dotenv').config()
 
 
 // * Define create table query
+// TODO: "modified_at" does not updating data in db
 const createValidateTableQuery = `
     CREATE TABLE IF NOT EXISTS ${process.env.VALIDATE_TABLE_NAME} (
         "id" SERIAL PRIMARY KEY,
@@ -12,7 +13,6 @@ const createValidateTableQuery = `
         "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         "modified_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`
-// TODO: "modified_at" does not updating data in db
 
 const createUsersTableQuery = `
     CREATE TABLE IF NOT EXISTS ${process.env.USERS_TABLE_NAME} (
@@ -83,7 +83,6 @@ async function emailAlreadyValidated(userEmail) {
         return 0
     }
 }
-
 
 async function giveMeValidationCode(userEmail) {
     try {
@@ -180,22 +179,23 @@ async function validateEmail(userEmail) {
 
 
 async function runQuery(queryCommand, insertData = null) {
-    try {
-        // * Create client object
-        const client = new Client({
-            host: "localhost",
-            user: process.env.DB_USERNAME,
-            port: process.env.DB_PORT,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_DATABASE
-        })
+    // * Create client object
+    const client = new Client({
+        host: "localhost",
+        user: process.env.DB_USERNAME,
+        port: process.env.DB_PORT,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_DATABASE
+    })
 
+    try {
         // * Create connection to database
         await client.connect()
 
         // * Create table every time just incase
         await client.query(createUsersTableQuery)
         await client.query(createValidateTableQuery)
+        await client.query(createForgotPasswordTableQuery)
 
         // * Run query
         var queryCommandResponse = null
@@ -255,6 +255,7 @@ async function findUser(username = null, email = null, userId = null) {
     }
 }
 
+
 async function newUser(newUserData) {
     try {
         const user = await runQuery(`INSERT INTO ${process.env.USERS_TABLE_NAME} (username, email, password) VALUES ($1, $2, $3) RETURNING *`, newUserData)
@@ -270,6 +271,7 @@ async function newUser(newUserData) {
         return false
     }
 }
+
 
 async function saveToken(userId, token) {
     try {
@@ -287,6 +289,7 @@ async function saveToken(userId, token) {
     }
 }
 
+
 async function changePassword(userId, password) {
     try {
         const queryRespond = await runQuery(`UPDATE ${process.env.USERS_TABLE_NAME} SET password = '${password}' WHERE id = ${userId}`)
@@ -303,7 +306,8 @@ async function changePassword(userId, password) {
     }
 }
 
-async function saveCodeToDB(email) {
+
+async function saveEmailCodeToDB(email) {
     try {
         // * Check if email already exists
         const randomNumber = (Math.floor(Math.random() * 100000000) + 100000000).toString().substring(1)
@@ -331,8 +335,35 @@ async function saveCodeToDB(email) {
 }
 
 
+async function saveForgotPasswordCodeToDB(email) {
+    try {
+        // * Check if email already exists
+        const randomNumber = (Math.floor(Math.random() * 100000000) + 100000000).toString().substring(1)
+        const existenceResponse = await runQuery(`SELECT COUNT(*) FROM ${process.env.FORGOT_PASSWORD_TABLE_NAME} WHERE email = '${email}'`)
+        if (existenceResponse.rows[0].count == 0) {
+            // * Not founded | Insert new row in database
+            const insertToDBResponse = await runQuery(`INSERT INTO ${process.env.FORGOT_PASSWORD_TABLE_NAME} ("email", "code") VALUES ('${email}', '${randomNumber}')`)
+            if (!insertToDBResponse) {
+                return false
+            }
+        }
+        else {
+            // * Founded | Update row
+            const updateRowDBQueryResponse = await runQuery(`UPDATE ${process.env.FORGOT_PASSWORD_TABLE_NAME} SET code = '${randomNumber}' WHERE email = '${email}'`)
+            if (!updateRowDBQueryResponse) {
+                return false
+            }
+        }
+        return randomNumber
+    }
+    catch (error) {
+        // console.log(error);
+        return false
+    }
+}
+
+
 module.exports = {
-    saveCodeToDB,
     giveMeValidationCode,
     validateEmail,
     emailAlreadyValidated,
@@ -340,4 +371,6 @@ module.exports = {
     newUser,
     saveToken,
     changePassword,
+    saveEmailCodeToDB,
+    saveForgotPasswordCodeToDB,
 }

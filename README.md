@@ -5,7 +5,8 @@ A basic authentication service using NodeJs
 <br/>
 
 ## General TODO:
-- [ ] A special status for 'expired token, needs to login again'
+- [ ] 0.1: A special status for 'expired token, needs to login again'
+- [ ] 0.2: All responses should have status code
 
 <br/>
 <br/>

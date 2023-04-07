@@ -11,6 +11,7 @@ const auth = require('./middleware/auth')
 const { findUser, newUser, saveToken, changePassword } = require('./model/database')
 const { emailRegexValidation } = require('./utils/regexValidation')
 const { sendEmailValidationCode } = require('./model/sendEmailValidationCode')
+const { sendForgotPasswordCode } = require('./model/sendForgotPasswordCode')
 
 
 app.post('/register', async (request, response) => {
@@ -156,7 +157,7 @@ app.post('/reset_password', auth, async (request, response) => {
 app.post('/forgot_password', auth, async (request, response) => {                                        // TODO: Can it be Get method?
     try {
         const user = await findUser(undefined, undefined, request.user.user_id)
-        const sendEmailResponse = await sendEmailValidationCode(request, response, user.email)
+        const sendEmailResponse = await sendForgotPasswordCode(request, response, user.email)
         if (!sendEmailResponse) {
             return response.status(400).send('An error accrued during sending email, Please try again')
         }
@@ -168,6 +169,20 @@ app.post('/forgot_password', auth, async (request, response) => {               
         return response.status(400).send('An error accrued, Please try again')
     }
 })
+app.get('/new_password', async function (request, response) {
+    // const link = 'http://' + host + '/new_password?email=' + userEmail + '&reset_code=' + randomNumber
+})
+
+
+// app.get('/validate_email', async function (request, response) {
+//     try {
+//         await validateCode(request, response)
+//     }
+//     catch (error) {
+//         response.send('error 9: Unexpected error accrued. Please contact admin')
+//         return
+//     }
+// })
 
 
 app.get('/welcome', auth, (request, response) => {
