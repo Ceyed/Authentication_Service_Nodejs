@@ -121,11 +121,11 @@ app.post('/login', async (request, response) => {
 })
 
 
-app.get('/reset_password', auth, async (request, response) => {
+app.post('/reset_password', auth, async (request, response) => {
     try {
         const user = await findUser(undefined, undefined, request.user.user_id)
 
-        const { old_password, new_password } = request.query
+        const { old_password, new_password } = request.body
 
         // * Check if passwords are identical
         if (old_password == new_password) {
@@ -153,19 +153,24 @@ app.get('/reset_password', auth, async (request, response) => {
 })
 
 
-app.get('/forgot_password', auth, async (request, response) => {
+app.post('/forgot_password', auth, async (request, response) => {                                        // TODO: Can it be Get method?
     try {
         const user = await findUser(undefined, undefined, request.user.user_id)
-        // await sendCode(request, response, user.email)
+        const sendEmailResponse = await sendEmailValidationCode(request, response, user.email)
+        if (!sendEmailResponse) {
+            return response.status(400).send('An error accrued during sending email, Please try again')
+        }
+        else {
+            return response.status(200).send('Reset code sent. Please check your email')
+        }
     }
     catch (error) {
-        response.send('Error 8: Unexpected error accrued. Please contact admin')
-        return
+        return response.status(400).send('An error accrued, Please try again')
     }
 })
 
 
-app.get('/welcome', auth, (req, response) => {
+app.get('/welcome', auth, (request, response) => {
     response.status(200).send('Welcome 🙌')
 })
 

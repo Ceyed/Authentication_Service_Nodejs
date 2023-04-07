@@ -251,7 +251,7 @@ async function findUser(username = null, email = null, userId = null) {
         }
     }
     catch (error) {
-        return "error"
+        return "error"                                                                  // TODO: Check later
     }
 }
 

@@ -64,7 +64,7 @@ save 'new hashed password' to database
 <br/>
 
 #### TODO
-- [ ] 4.1: Create temp code and save it in database
-- [ ] 4.2: Create a validation-link and email it to user along with the code itself
+- [x] 4.1: Create temp code and save it in database
+- [x] 4.2: Create a validation-link and email it to user along with the code itself
 - [ ] 4.3: After receiving the code (in either way) get a new password from user
 - [ ] 4.4: Save 'new hashed password' in database

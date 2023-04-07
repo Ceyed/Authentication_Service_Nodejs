@@ -22,9 +22,12 @@ async function sendEmailValidationCode(request, response, userEmail) {
         const link = 'http://' + host + '/validate?email=' + userEmail + '&validation_code=' + randomNumber
 
         // * Email validation link to user
+        var sendEmailResponse = null
         await sendEmail(userEmail, link)
-        // .then((result) => response.send('Email sent'))
-        // .catch((error) => response.send('Error: Couldn\'t send email'))
+            .then((result) => sendEmailResponse = true)
+            .catch((error) => sendEmailResponse = false)
+
+        return sendEmailResponse
     }
     catch (error) {
         // console.log(error)

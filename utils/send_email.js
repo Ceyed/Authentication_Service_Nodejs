@@ -38,7 +38,7 @@ async function sendEmail(receiver, validationLink) {
             from: 'Ceyed <noreply@gmail.com>',                              // TODO: Change 'Ceyed <noreply@gmail.com>'
             to: receiver,
             subject: 'Please confirm your email account',
-            html: '<h3> Hello There <br> Please click on the link bellow to validate your email: <br><a href=' + validationLink + '>Click here to validate</a><br><br> Respectfully <br> Ceyed | https://github.com/Ceyed <br></h3>'
+            html: '<h3> Hello There <br> Please choose one option to validate your email: <br>1. <a href=' + validationLink + '>Click here to validate</a><br>2. Enter this code: </h3><h2>' + validationLink.split('&validation_code=')[1] + '</h2><br><h3> Respectfully <br> Ceyed | https://github.com/Ceyed <br></h3>'
         }
 
         // * Send email
