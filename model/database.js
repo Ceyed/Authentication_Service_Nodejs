@@ -85,59 +85,6 @@ async function emailAlreadyValidated(userEmail) {
 }
 
 
-async function saveCodeToDB(userEmail) {
-    try {
-        // * Create client object
-        const client = new Client({
-            host: "localhost",
-            user: process.env.DB_USERNAME,
-            port: process.env.DB_PORT,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_DATABASE
-        })
-
-        // * Create connection to database
-        await client.connect()
-
-        // * Create table every time just incase
-        await client.query(createValidateTableQuery)
-
-        // * Create random number to save in database
-        const randomNumber = (Math.floor(Math.random() * 100000000) + 100000000).toString().substring(1)
-
-        // * Check if email already exists
-        const checkIfEmailExistsQuery = `SELECT COUNT(*) FROM ${process.env.VALIDATE_TABLE_NAME} WHERE email = '${userEmail}'`
-        const existenceResponse = await client.query(checkIfEmailExistsQuery)
-        if (existenceResponse.rows[0].count == 0) {
-            // * Not founded | Insert new row in database
-            const insertToDBQuery = `INSERT INTO ${process.env.VALIDATE_TABLE_NAME} ("email", "code") VALUES ('${userEmail}', '${randomNumber}')`
-            await client.query(insertToDBQuery)
-        }
-        else {
-            // * Founded | Update row
-            const updateRowDBQuery = `UPDATE ${process.env.VALIDATE_TABLE_NAME} SET code = '${randomNumber}' WHERE email = '${userEmail}'`
-            await client.query(updateRowDBQuery)
-        }
-
-        // * Close connection to database and return random number
-        await client.end()
-        return randomNumber
-    }
-    catch (error) {
-        // console.error(error.stack)
-        // TODO: Change lines bellow later, Please
-        try {
-            // * Close connection if there is any
-            await client.end()
-        }
-        catch {
-
-        }
-        return 0
-    }
-}
-
-
 async function giveMeValidationCode(userEmail) {
     try {
         // * Create client object
@@ -349,6 +296,33 @@ async function changePassword(userId, password) {
         else {
             return true
         }
+    }
+    catch (error) {
+        // console.log(error);
+        return false
+    }
+}
+
+async function saveCodeToDB(email) {
+    try {
+        // * Check if email already exists
+        const randomNumber = (Math.floor(Math.random() * 100000000) + 100000000).toString().substring(1)
+        const existenceResponse = await runQuery(`SELECT COUNT(*) FROM ${process.env.VALIDATE_TABLE_NAME} WHERE email = '${email}'`)
+        if (existenceResponse.rows[0].count == 0) {
+            // * Not founded | Insert new row in database
+            const insertToDBResponse = await runQuery(`INSERT INTO ${process.env.VALIDATE_TABLE_NAME} ("email", "code") VALUES ('${email}', '${randomNumber}')`)
+            if (!insertToDBResponse) {
+                return false
+            }
+        }
+        else {
+            // * Founded | Update row
+            const updateRowDBQueryResponse = await runQuery(`UPDATE ${process.env.VALIDATE_TABLE_NAME} SET code = '${randomNumber}' WHERE email = '${email}'`)
+            if (!updateRowDBQueryResponse) {
+                return false
+            }
+        }
+        return randomNumber
     }
     catch (error) {
         // console.log(error);

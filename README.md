@@ -21,7 +21,7 @@ if not, return false
 - [x] 1.1: Check if user already registered (email should be unique)
 - [x] 1.2: Regex validation for inputs
 - [x] 1.3: If user didn't registered, create a new one in database with hashed password and token, then return it
-- [ ] 1.4: Email validation after registration
+- [x] 1.4: Email validation after registration
 - [ ] 1.5: Password Regex Validation: numb3r, special ch@r, UPPER, lower
 
 <br/>

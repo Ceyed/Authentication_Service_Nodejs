@@ -10,6 +10,7 @@ require('dotenv').config()
 const auth = require('./middleware/auth')
 const { findUser, newUser, saveToken, changePassword } = require('./model/database')
 const { emailRegexValidation } = require('./utils/regexValidation')
+const { sendEmailValidationCode } = require('./model/sendEmailValidationCode')
 
 
 app.post('/register', async (request, response) => {
@@ -58,6 +59,9 @@ app.post('/register', async (request, response) => {
 
         // * save user token
         user = await saveToken(user.id, token)
+
+        // * Email validation
+        await sendEmailValidationCode(request, response, email)                                   // TODO: Can it be NOT await?
 
         // * return new user
         response.status(201).json(user)
