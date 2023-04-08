@@ -7,6 +7,8 @@ A basic authentication service using NodeJs
 ## General TODO:
 - [ ] 0.1: A special status for 'expired token, needs to login again'
 - [ ] 0.2: All responses should have status code
+- [ ] 0.3: Make app.js clean, all functions should call one function only
+- [ ] 0.4: More structure in folders (after TODO #0.3)
 
 <br/>
 
@@ -17,7 +19,7 @@ if not, return false
 
 Requests           |    Method      |     Input                         |   Returns
 -------------------|----------------|-----------------------------------|------------------
-register           |    post        |    username, email, password      |  token || false
+register           |    post        |    username, email, password      |  token or false
 
 <br/>
 
@@ -38,7 +40,7 @@ otherwise return false
 
 Requests           |    Method      |     Input                         |   Returns
 -------------------|----------------|-----------------------------------|------------------
-login              |    post        |    username || email, password    |  token || false
+login              |    post        |    username || email, password    |  token or false
 
 <br/>
 
@@ -55,7 +57,7 @@ return true || false
 
 Requests           |    Method      |     Input                             |   Returns
 -------------------|----------------|---------------------------------------|------------------
-change_password    |    post        |    token, old_password, new_password  |  token || false
+change_password    |    post        |    token, old_password, new_password  |  token or false
 
 
 <br/>
@@ -76,9 +78,9 @@ save 'new hashed password' to database
 
 Requests           |    Method      |     Input        |   Returns
 -------------------|----------------|------------------|------------------
-forgot_password    |    post        |    - (token)     |  true || false
-check_resetcode    |    get         |    reset code    |  true || false
-new_password       |    post        |    new password  |  true || false
+forgot_password    |    post        |    - (token)     |  true or false
+check_resetcode    |    post        |    reset code    |  true or false
+new_password       |    post        |    new password  |  true or false
 
 <br/>
 
@@ -97,8 +99,8 @@ in either way, after receiving the code, email validates
 
 Requests           |    Method      |     Input                     |   Returns
 -------------------|----------------|-------------------------------|------------------
-validate_email     |    post        |    validation_code, token     |  true || false
-validate_email     |    get         |    validation_code, token     |  true || false
+validate_email     |    post        |    validation_code, token     |  true or false
+validate_email     |    get         |    validation_code, token     |  true or false
 
 <br/>
 

@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
 const auth = require('./middleware/auth')
-const { findUser, newUser, saveToken, changePassword } = require('./model/database')
+const { findUser, newUser, saveToken, changePassword, checkResetCode } = require('./model/database')
 const { emailRegexValidation } = require('./utils/regexValidation')
 const { sendEmailValidationCode } = require('./model/sendEmailValidationCode')
 const { sendForgotPasswordCode } = require('./model/sendForgotPasswordCode')
@@ -169,6 +169,25 @@ app.post('/forgot_password', auth, async (request, response) => {
         return response.status(400).send('An error accrued, Please try again')
     }
 })
+app.post('/check_resetcode', auth, async function (request, response) {
+    try {
+        const user = await findUser(undefined, undefined, request.user.user_id)
+        const { reset_code } = request.body
+
+        const sendEmailResponse = await checkResetCode(user.email, reset_code)
+        if (sendEmailResponse) {
+            return response.status(200).send('Reset code matches')
+        }
+        else {
+            return response.status(200).send('Reset code is wrong')
+        }
+    }
+    catch (error) {
+        return response.status(400).send('An error accrued, Please try again')
+    }
+})
+
+
 // app.get('/check_resetcode', auth, async function (request, response) {
 // })
 
@@ -202,6 +221,6 @@ app.use('*', (req, res) => {
 })
 
 
-app.listen(process.env.PORT, function () {
-    console.log(`Server Is Online::${process.env.PORT}`)
+app.listen(process.env.SERVER_PORT, function () {
+    console.log(`Server Is Online::${process.env.SERVER_PORT}`)
 })
