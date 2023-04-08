@@ -2,7 +2,7 @@ const { giveMeValidationCode, validateEmail } = require('../model/database')
 const { emailRegexValidation, emailCodeRegexValidation } = require('../utils/regexValidation')
 
 
-async function validateEmailAddress(request, response, userEmail, inputValidationCode) {
+async function validateEmailAddress(userEmail, inputValidationCode) {
     try {
         // * Regex validation
         const emailRegexResult = await emailRegexValidation(userEmail)

@@ -9,7 +9,7 @@ require('dotenv').config()
 
 const auth = require('./middleware/auth')
 const { findUser, newUser, saveToken, changePassword, checkResetCode } = require('./model/database')
-const { emailRegexValidation } = require('./utils/regexValidation')
+const { emailRegexValidation, strongPasswordRegexValidation } = require('./utils/regexValidation')
 const { sendEmailValidationCode } = require('./model/sendEmailValidationCode')
 const { validateEmailAddress } = require('./model/validateEmailAddress')
 const { sendForgotPasswordCode } = require('./model/sendForgotPasswordCode')
@@ -26,11 +26,10 @@ app.post('/register', async (request, response) => {
 
         // * Regex validation
         const emailRegexResult = await emailRegexValidation(email)
-        if (emailRegexResult == false) {
-            return response.status(400).send('Invalid email address')
+        const passwordRegexResult = await strongPasswordRegexValidation(password)
+        if (emailRegexResult == false || passwordRegexResult == false) {
+            return response.status(400).send('Invalid Inputs')
         }
-        //                                                                       TODO: Password Regex Validation: numb3r, special ch@r, UPPER, lower
-
 
         // * check if user already exist
         const oldUser = await findUser(username, email)
@@ -84,7 +83,11 @@ app.post('/login', async (request, response) => {
             return response.status(400).send('username (or email) and password are required')
         }
 
-        //                                                                                              TODO: Password validation
+        // * Regex validation
+        const passwordRegexResult = await strongPasswordRegexValidation(password)
+        if (passwordRegexResult == false) {
+            return response.status(400).send('Invalid password')
+        }
 
 
         // * Validate if user exist in our database
@@ -132,6 +135,12 @@ app.post('/change_password', auth, async (request, response) => {
         // * Check if passwords are identical
         if (old_password == new_password) {
             return response.status(400).send('Invalid Credentials')
+        }
+
+        // * Regex validation
+        const passwordRegexResult = await strongPasswordRegexValidation(new_password)
+        if (passwordRegexResult == false) {
+            return response.status(400).send('Invalid password')
         }
 
         // * Check old passwords
@@ -187,12 +196,16 @@ app.post('/check_resetcode', auth, async function (request, response) {
         return response.status(400).send('An error accrued, Please try again')
     }
 })
-
-
-app.post('/new_password', auth, async function (request, response) {                                // TODO: Access directly to this request?
+app.post('/new_password', auth, async function (request, response) {                                // TODO: Access directly to this request
     try {
         const user = await findUser(undefined, undefined, request.user.user_id)
         const { new_password } = request.body
+
+        // * Regex validation
+        const passwordRegexResult = await strongPasswordRegexValidation(new_password)
+        if (passwordRegexResult == false) {
+            return response.status(400).send('Invalid password')
+        }
 
         // * Encrypt user's new password
         newEncryptedPassword = await bcrypt.hash(new_password, parseInt(process.env.SALT_ROUNDS))
@@ -209,13 +222,10 @@ app.post('/new_password', auth, async function (request, response) {            
 })
 
 
-// app.get('/check_resetcode', auth, async function (request, response) {
-// })
-
-
 app.post('/send_evc', async (request, response) => {
     try {
         const { email } = request.body
+
         if (await sendEmailValidationCode(request, response, email)) {
             return response.status(200).send('Validation code sended. Check your email')
         }
@@ -231,7 +241,7 @@ app.get('/validate_email', async function (request, response) {
     try {
         const { email, validation_code } = request.query
 
-        if (await validateEmailAddress(request, response, email, validation_code)) {
+        if (await validateEmailAddress(email, validation_code)) {
             return response.status(200).send('Email validated')
         }
         else {
@@ -246,7 +256,7 @@ app.post('/validate_email', async function (request, response) {
     try {
         const { email, validationCode } = request.body
 
-        if (await validateEmailAddress(request, response, email, validationCode)) {
+        if (await validateEmailAddress(email, validationCode)) {
             return response.status(200).send('Email validated')
         }
         else {

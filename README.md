@@ -28,7 +28,7 @@ register           |    post        |    username, email, password      |  token
 - [x] 1.2: Regex validation for inputs
 - [x] 1.3: If user didn't registered, create a new one in database with hashed password and token, then return it
 - [x] 1.4: Email validation after registration
-- [ ] 1.5: Password Regex Validation: numb3r, special ch@r, UPPER, lower
+- [x] 1.5: Password Regex Validation: numb3r, special ch@r, UPPER, lower
 
 <br/>
 <br/>
@@ -46,7 +46,7 @@ login              |    post        |    username || email, password    |  token
 
 #### TODO
 - [x] 2.1: Check 'saved hashed password' with 'input hashed password', return 'user' with 'token' if they are the same
-- [ ] 2.2: Password Regex Validation: numb3r, special ch@r, UPPER, lower
+- [x] 2.2: Password Regex Validation: numb3r, special ch@r, UPPER, lower
 
 <br/>
 <br/>
@@ -64,7 +64,7 @@ change_password    |    post        |    token, old_password, new_password  |  t
 
 #### TODO
 - [x] 3.1: 'Old password' and 'new password' should not be identical
-- [ ] 3.2: Password Regex Validation: numb3r, special ch@r, UPPER, lower
+- [x] 3.2: Password Regex Validation: numb3r, special ch@r, UPPER, lower
 - [x] 3.3: 'Saved password' and 'hashed old password' should be identical
 - [x] 3.4: Save 'hashed new password'
 
@@ -90,7 +90,7 @@ new_password       |    post        |    new password  |  true or false
 - [x] 4.3: After receiving the code, get a new password from user
 - [x] 4.4: Save 'new hashed password' in database
 - [x] 4.5: Remove the row in database after password resets
-- [ ] 4.6: Password Regex Validation: numb3r, special ch@r, UPPER, lower
+- [x] 4.6: Password Regex Validation: numb3r, special ch@r, UPPER, lower
 
 <br/>
 <br/>

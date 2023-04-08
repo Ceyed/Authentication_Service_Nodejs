@@ -4,6 +4,12 @@ const { sendEmail } = require('../utils/send_email')
 
 async function sendEmailValidationCode(request, response, userEmail) {
     try {
+        // * Regex validation
+        const emailRegexResult = await emailRegexValidation(email)
+        if (emailRegexResult == false) {
+            return false
+        }
+
         // * Check if email already validated
         if (await emailAlreadyValidated(userEmail) == true) {                // TODO: Change function for new 'validate' column in 'users' table
             // response.send('Email already activated')

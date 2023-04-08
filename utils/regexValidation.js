@@ -30,14 +30,23 @@ function emailCodeRegexValidation(validateCode) {
     if (!validateCode)
         return false
 
-    var valid = validateCodeRegex.test(validateCode)
-    if (!valid)
+    return validateCodeRegex.test(validateCode)
+}
+
+
+const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+
+function strongPasswordRegexValidation(password) {
+    if (!password)
         return false
 
-    return true
+    return strongPasswordRegex.test(password)
 }
+
+
 
 module.exports = {
     emailRegexValidation,
     emailCodeRegexValidation,
+    strongPasswordRegexValidation,
 }
