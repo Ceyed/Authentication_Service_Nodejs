@@ -19,7 +19,7 @@ async function sendEmailValidationCode(request, response, userEmail) {
 
         // * Creating validation link to email it
         const host = request.header('host')
-        const link = 'http://' + host + '/validate?email=' + userEmail + '&validation_code=' + randomNumber
+        const link = 'http://' + host + '/validate_email?email=' + userEmail + '&validation_code=' + randomNumber
 
         // * Email validation link to user
         var sendEmailResponse = null

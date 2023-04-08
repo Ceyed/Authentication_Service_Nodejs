@@ -9,7 +9,6 @@ const createValidateTableQuery = `
         "id" SERIAL PRIMARY KEY,
         "email" VARCHAR(50) NOT NULL,
         "code" VARCHAR(8) NOT NULL,
-        "validated" BOOL DEFAULT '0',
         "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         "modified_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`
@@ -34,148 +33,6 @@ const createForgotPasswordTableQuery = `
         "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         "modified_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`
-
-
-async function emailAlreadyValidated(userEmail) {
-    try {
-        // * Create client object
-        const client = new Client({
-            host: "localhost",
-            user: process.env.DB_USERNAME,
-            port: process.env.DB_PORT,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_DATABASE
-        })
-
-        // * Create connection to database
-        await client.connect()
-
-        // * Create table every time just incase
-        await client.query(createValidateTableQuery)
-
-        // * Check if email exists
-        const checkIfEmailExistsQuery = `SELECT COUNT(*) FROM ${process.env.VALIDATE_TABLE_NAME} WHERE email = '${userEmail}'`
-        const existenceResponse = await client.query(checkIfEmailExistsQuery)
-        if (existenceResponse.rows[0].count == 0) {
-            // * Not founded
-            await client.end()
-            return false
-        }
-        else {
-            // * Founded
-            const emailIsValidQuery = `SELECT validated FROM ${process.env.VALIDATE_TABLE_NAME} WHERE email = '${userEmail}'`
-            const emailIsValidResponse = await client.query(emailIsValidQuery)
-            await client.end()
-            return emailIsValidResponse.rows[0].validated
-        }
-    }
-    catch (error) {
-        // console.error(error.stack)
-        // TODO: Change lines bellow later, Please
-        try {
-            // * Close connection if there is any
-            await client.end()
-        }
-        catch {
-
-        }
-        return 0
-    }
-}
-
-
-async function giveMeValidationCode(userEmail) {
-    try {
-        // * Create client object
-        const client = new Client({
-            host: "localhost",
-            user: process.env.DB_USERNAME,
-            port: process.env.DB_PORT,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_DATABASE
-        })
-
-        // * Create connection to database
-        await client.connect()
-
-        // * Create table every time just incase
-        await client.query(createValidateTableQuery)
-
-        // * Read saved code from database and return it
-        const getValidationCodeQuery = `SELECT code FROM ${process.env.VALIDATE_TABLE_NAME} WHERE email = '${userEmail}'`
-        const validationCodeResponse = await client.query(getValidationCodeQuery)
-        if (validationCodeResponse.rowCount == 0) {
-            // * Not found email
-            // * Close connection to database and return null
-            await client.end()
-            return null
-        }
-        else {
-            // * Email founded
-            // * Close connection to database and return validation code
-            await client.end()
-            return validationCodeResponse.rows[0].code
-        }
-    }
-    catch (error) {
-        // console.error(error.stack)
-        // TODO: Change lines bellow later, Please
-        try {
-            // * Close connection if there is any
-            await client.end()
-        }
-        catch {
-
-        }
-        return null
-    }
-}
-
-
-async function validateEmail(userEmail) {
-    try {
-        // * Create client object
-        const client = new Client({
-            host: "localhost",
-            user: process.env.DB_USERNAME,
-            port: process.env.DB_PORT,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_DATABASE
-        })
-
-        // * Create connection to database
-        await client.connect()
-
-        // * Create table every time just incase
-        await client.query(createValidateTableQuery)
-
-        // * Valid email
-        try {
-            const getValidationCodeQuery = `UPDATE ${process.env.VALIDATE_TABLE_NAME} SET validated = '1' WHERE email = '${userEmail}'`
-            await client.query(getValidationCodeQuery)
-            // * Close connection to database and return validation code
-            await client.end()
-            return true
-        }
-        catch {
-            // * Close connection to database and return validation code
-            await client.end()
-            return false
-        }
-    }
-    catch (error) {
-        // console.error(error.stack)
-        // TODO: Change lines bellow later, Please
-        try {
-            // * Close connection if there is any
-            await client.end()
-        }
-        catch {
-
-        }
-        return 0
-    }
-}
 
 
 async function runQuery(queryCommand, insertData = null) {
@@ -381,10 +238,67 @@ async function checkResetCode(email, reset_code) {
 }
 
 
+async function giveMeValidationCode(userEmail) {
+    try {
+        // * Read saved code from database and return it
+        const validationCodeResponse = await runQuery(`SELECT code FROM ${process.env.VALIDATE_TABLE_NAME} WHERE email = '${userEmail}'`)
+        if (validationCodeResponse.rowCount == 0) {
+            // * Not found email
+            return false
+        }
+        else {
+            // * Email founded
+            return validationCodeResponse.rows[0].code
+        }
+    }
+    catch (error) {
+        // console.log(error);
+        return false
+    }
+}
+
+
+async function validateEmail(userEmail) {
+    try {
+        const validateEmailResponse = await runQuery(`UPDATE ${process.env.USERS_TABLE_NAME} SET validated = '1' WHERE email = '${userEmail}'`)
+        if (!validateEmailResponse) {
+            return false
+        }
+        else {
+            await runQuery(`DELETE FROM ${process.env.VALIDATE_TABLE_NAME} WHERE email = '${userEmail}' AND EXISTS(SELECT * FROM ${process.env.VALIDATE_TABLE_NAME} WHERE email = '${userEmail}')`)
+            return true
+        }
+    }
+    catch (error) {
+        console.log(error);
+        return false
+    }
+
+}
+
+
+async function emailAlreadyValidated(userEmail) {
+    try {
+        // * Check if email exists
+        const existenceResponse = await runQuery(`SELECT COUNT(*) FROM ${process.env.USERS_TABLE_NAME} WHERE email = '${userEmail}'`)
+        if (existenceResponse.rows[0].count == 0) {
+            // * Not founded
+            return false
+        }
+        else {
+            // * Founded
+            const emailIsValidResponse = await runQuery(`SELECT validated FROM ${process.env.USERS_TABLE_NAME} WHERE email = '${userEmail}'`)
+            return emailIsValidResponse.rows[0].validated
+        }
+    }
+    catch (error) {
+        console.log(error);
+        return false
+    }
+}
+
+
 module.exports = {
-    giveMeValidationCode,
-    validateEmail,
-    emailAlreadyValidated,
     findUser,
     newUser,
     saveToken,
@@ -392,4 +306,7 @@ module.exports = {
     saveEmailCodeToDB,
     saveForgotPasswordCodeToDB,
     checkResetCode,
+    giveMeValidationCode,
+    validateEmail,
+    emailAlreadyValidated,
 }

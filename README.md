@@ -86,8 +86,8 @@ new_password       |    post        |    new password  |  true or false
 
 #### TODO
 - [x] 4.1: Create temp code and save it in database
-- [x] 4.2: Create a validation-link and email it to user along with the code itself
-- [x] 4.3: After receiving the code (in either way) get a new password from user
+- [x] 4.2: Create a validation-code and email it to user
+- [x] 4.3: After receiving the code, get a new password from user
 - [x] 4.4: Save 'new hashed password' in database
 - [x] 4.5: Remove the row in database after password resets
 - [ ] 4.6: Password Regex Validation: numb3r, special ch@r, UPPER, lower
@@ -101,12 +101,14 @@ in either way, after receiving the code, email validates
 
 Requests           |    Method      |     Input                     |   Returns
 -------------------|----------------|-------------------------------|------------------
-validate_email     |    post        |    validation_code, token     |  true or false
+send_evc           |    post        |    validation_code, token     |  true or false
 validate_email     |    get         |    validation_code, token     |  true or false
+validate_email     |    post        |    validation_code, token     |  true or false
 
 <br/>
 
 #### TODO
-- [ ] 5.1: Create temp code and save it in database
-- [ ] 5.2: Create a validation-link and email it to user along with the code itself
-- [ ] 5.3: After receiving the code (in either way) email gets validate
+- [x] 5.1: Create temp code and save it in database
+- [x] 5.2: Create a validation-link and email it to user along with the code itself
+- [x] 5.3: After receiving the code (in either way) email gets validate
+- [x] 5.4: Remove the row in database after email validated

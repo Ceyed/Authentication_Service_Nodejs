@@ -11,6 +11,7 @@ const auth = require('./middleware/auth')
 const { findUser, newUser, saveToken, changePassword, checkResetCode } = require('./model/database')
 const { emailRegexValidation } = require('./utils/regexValidation')
 const { sendEmailValidationCode } = require('./model/sendEmailValidationCode')
+const { validateEmailAddress } = require('./model/validateEmailAddress')
 const { sendForgotPasswordCode } = require('./model/sendForgotPasswordCode')
 
 
@@ -162,7 +163,7 @@ app.post('/forgot_password', auth, async (request, response) => {
             return response.status(400).send('An error accrued during sending email, Please try again')
         }
         else {
-            return response.status(200).send('Reset code sent. Please check your email')
+            return response.status(200).send('Reset code sended. Please check your email')
         }
     }
     catch (error) {
@@ -212,15 +213,50 @@ app.post('/new_password', auth, async function (request, response) {            
 // })
 
 
-// app.get('/validate_email', async function (request, response) {
-//     try {
-//         await validateCode(request, response)
-//     }
-//     catch (error) {
-//         response.send('error 9: Unexpected error accrued. Please contact admin')
-//         return
-//     }
-// })
+app.post('/send_evc', async (request, response) => {
+    try {
+        const { email } = request.body
+        if (await sendEmailValidationCode(request, response, email)) {
+            return response.status(200).send('Validation code sended. Check your email')
+        }
+        else {
+            return response.status(400).send('Validation code didn\'t send')
+        }
+    }
+    catch (error) {
+        return response.status(400).send('An error accrued, Please try again')
+    }
+})
+app.get('/validate_email', async function (request, response) {
+    try {
+        const { email, validation_code } = request.query
+
+        if (await validateEmailAddress(request, response, email, validation_code)) {
+            return response.status(200).send('Email validated')
+        }
+        else {
+            response.status(400).send('Email didn\'t validate')
+        }
+    }
+    catch (error) {
+        return response.status(400).send('An error accrued, Please try again')
+    }
+})
+app.post('/validate_email', async function (request, response) {
+    try {
+        const { email, validationCode } = request.body
+
+        if (await validateEmailAddress(request, response, email, validationCode)) {
+            return response.status(200).send('Email validated')
+        }
+        else {
+            return response.status(400).send('Email didn\'t validate')
+        }
+    }
+    catch (error) {
+        return response.status(400).send('An error accrued, Please try again')
+    }
+})
 
 
 app.get('/welcome', auth, (request, response) => {
