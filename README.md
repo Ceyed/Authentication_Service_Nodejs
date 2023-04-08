@@ -87,8 +87,10 @@ new_password       |    post        |    new password  |  true or false
 #### TODO
 - [x] 4.1: Create temp code and save it in database
 - [x] 4.2: Create a validation-link and email it to user along with the code itself
-- [ ] 4.3: After receiving the code (in either way) get a new password from user
-- [ ] 4.4: Save 'new hashed password' in database
+- [x] 4.3: After receiving the code (in either way) get a new password from user
+- [x] 4.4: Save 'new hashed password' in database
+- [x] 4.5: Remove the row in database after password resets
+- [ ] 4.6: Password Regex Validation: numb3r, special ch@r, UPPER, lower
 
 <br/>
 <br/>

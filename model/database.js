@@ -26,7 +26,6 @@ const createUsersTableQuery = `
         "modified_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`
 
-
 const createForgotPasswordTableQuery = `
     CREATE TABLE IF NOT EXISTS ${process.env.FORGOT_PASSWORD_TABLE_NAME} (
         "id" SERIAL PRIMARY KEY,
@@ -83,6 +82,7 @@ async function emailAlreadyValidated(userEmail) {
         return 0
     }
 }
+
 
 async function giveMeValidationCode(userEmail) {
     try {
@@ -251,7 +251,7 @@ async function findUser(username = null, email = null, userId = null) {
         }
     }
     catch (error) {
-        return "error"                                                                  // TODO: Check later
+        return "error"                                                                          // TODO: Check later
     }
 }
 
@@ -290,13 +290,14 @@ async function saveToken(userId, token) {
 }
 
 
-async function changePassword(userId, password) {
+async function changePassword(userId, password, email = null) {
     try {
         const queryRespond = await runQuery(`UPDATE ${process.env.USERS_TABLE_NAME} SET password = '${password}' WHERE id = ${userId}`)
         if (!queryRespond) {
             return false
         }
         else {
+            await runQuery(`DELETE FROM ${process.env.FORGOT_PASSWORD_TABLE_NAME} WHERE email = '${email}' AND EXISTS(SELECT * FROM ${process.env.FORGOT_PASSWORD_TABLE_NAME} WHERE email = '${email}')`)
             return true
         }
     }

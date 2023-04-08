@@ -188,6 +188,26 @@ app.post('/check_resetcode', auth, async function (request, response) {
 })
 
 
+app.post('/new_password', auth, async function (request, response) {                                // TODO: Access directly to this request?
+    try {
+        const user = await findUser(undefined, undefined, request.user.user_id)
+        const { new_password } = request.body
+
+        // * Encrypt user's new password
+        newEncryptedPassword = await bcrypt.hash(new_password, parseInt(process.env.SALT_ROUNDS))
+        if (await changePassword(user.id, newEncryptedPassword, user.email)) {
+            return response.status(200).send('Password changed')
+        }
+        else {
+            return response.status(400).send('Password didn\'t changed')
+        }
+    }
+    catch (error) {
+        return response.status(400).send('An error accrued, Please try again')
+    }
+})
+
+
 // app.get('/check_resetcode', auth, async function (request, response) {
 // })
 
