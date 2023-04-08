@@ -33,13 +33,13 @@ async function sendEmail(receiver, validationLink, forgotPassword = false) {
             },
         })
 
-        var emailText
-        var emailSubject
-        var code
+        let emailText
+        let emailSubject
+        let code
         if (forgotPassword) {
             code = validationLink.split('&reset_code=')[1]
             emailSubject = 'Reset Password'
-            emailText = '<h3> Hello There <br> Please Enter this code: </h3><h2>' + code + '</h2><h3> Respectfully <br> Datalatte | Dev Team <br></h3>'
+            emailText = '<h3> Hello There <br> Please Enter this code: </h3><h2>' + code + '</h2><h3> Respectfully <br> Ceyed | https://github.com/Ceyed <br></h3>'
         }
         else {
             code = validationLink.split('&validation_code=')[1]
