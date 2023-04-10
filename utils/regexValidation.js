@@ -34,7 +34,7 @@ function emailCodeRegexValidation(validateCode) {
 }
 
 
-const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%#*?&])[A-Za-z\d@$#!%*?&]{8,}$/
+const strongPasswordRegex = /^(?=.[A-Z])(?=.[!@#$&])(?=.[0-9])(?=.*[a-z]).{8,16}$/
 
 function strongPasswordRegexValidation(password) {
     if (!password)

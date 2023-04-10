@@ -10,7 +10,7 @@ const { register } = require('./model/register/register')
 const { login } = require('./model/login/login')
 const { changeUserPassword } = require('./model/change_password/changeUserPassword')
 const { sendForgotPasswordCode } = require('./model/forgot_password/sendForgotPasswordCode')
-const { check_resetcode } = require('./model/forgot_password/checkResetCode')
+const { checkResetCode } = require('./model/forgot_password/checkResetCode')
 const { setNewPassword } = require('./model/forgot_password/setNewPassword')
 const { sendEmailValidationCode } = require('./model/validate_email/sendEmailValidationCode')
 const { validateEmailAddress } = require('./model/validate_email/validateEmailAddress')
@@ -22,7 +22,7 @@ app.post('/register', async (request, response) => {
         register(request, response)
     }
     catch {
-        return response.status(400).send('An error accrued, Please try again')
+        return response.status(400).json('An error accrued, Please try again')
     }
 })
 
@@ -32,7 +32,7 @@ app.post('/login', async (request, response) => {
         login(request, response)
     }
     catch {
-        return response.status(400).send('An error accrued, Please try again')
+        return response.status(400).json('An error accrued, Please try again')
     }
 })
 
@@ -42,7 +42,7 @@ app.post('/change_password', auth, async (request, response) => {
         changeUserPassword(request, response)
     }
     catch {
-        return response.status(400).send('An error accrued, Please try again')
+        return response.status(400).json('An error accrued, Please try again')
     }
 })
 
@@ -52,15 +52,15 @@ app.post('/forgot_password', auth, async (request, response) => {
         sendForgotPasswordCode(request, response)
     }
     catch (error) {
-        return response.status(400).send('An error accrued, Please try again')
+        return response.status(400).json('An error accrued, Please try again')
     }
 })
 app.post('/check_resetcode', auth, async function (request, response) {
     try {
-        check_resetcode(request, response)
+        checkResetCode(request, response)
     }
     catch (error) {
-        return response.status(400).send('An error accrued, Please try again')
+        return response.status(400).json('An error accrued, Please try again')
     }
 })
 app.post('/new_password', auth, async function (request, response) {                                // TODO: Access directly to this request
@@ -68,7 +68,7 @@ app.post('/new_password', auth, async function (request, response) {            
         setNewPassword(request, response)
     }
     catch (error) {
-        return response.status(400).send('An error accrued, Please try again')
+        return response.status(400).json('An error accrued, Please try again')
     }
 })
 
@@ -78,7 +78,7 @@ app.post('/send_evc', async (request, response) => {
         sendEmailValidationCode(request, response)
     }
     catch (error) {
-        return response.status(400).send('An error accrued, Please try again')
+        return response.status(400).json('An error accrued, Please try again')
     }
 })
 app.get('/validate_email', async function (request, response) {
@@ -86,7 +86,7 @@ app.get('/validate_email', async function (request, response) {
         validateEmailAddress(request, response, 'get')
     }
     catch (error) {
-        return response.status(400).send('An error accrued, Please try again')
+        return response.status(400).json('An error accrued, Please try again')
     }
 })
 app.post('/validate_email', async function (request, response) {
@@ -94,13 +94,13 @@ app.post('/validate_email', async function (request, response) {
         validateEmailAddress(request, response, 'post')
     }
     catch (error) {
-        return response.status(400).send('An error accrued, Please try again')
+        return response.status(400).json('An error accrued, Please try again')
     }
 })
 
 // ! Test middleware
 app.get('/welcome', auth, (request, response) => {
-    response.status(200).send('Welcome 🙌')
+    response.status(200).json('Welcome 🙌')
 })
 
 // ! 404

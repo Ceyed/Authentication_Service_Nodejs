@@ -6,7 +6,7 @@ const verifyToken = (request, response, next) => {
     const token = request.headers[process.env.TOKEN_IN_HEADER]
 
     if (!token) {
-        return response.status(403).send("A token is required for authentication")
+        return response.status(403).json("A token is required for authentication")
     }
     try {
         const decoded = jwt.verify(token, process.env.TOKEN_KEY)
@@ -14,7 +14,7 @@ const verifyToken = (request, response, next) => {
     }
     catch (error) {
         // console.log(error);
-        return response.status(401).send("Invalid Token")
+        return response.status(401).json("Invalid Token")
     }
     return next()
 }

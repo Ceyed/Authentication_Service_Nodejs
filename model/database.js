@@ -221,7 +221,7 @@ async function saveForgotPasswordCodeToDB(email) {
 }
 
 
-async function checkResetCode(email, reset_code) {
+async function checkResetCodeInDB(email, reset_code) {
     try {
         const savedResetCode = await runQuery(`SELECT code FROM ${process.env.FORGOT_PASSWORD_TABLE_NAME} WHERE email = '${email}'`)
         if (savedResetCode.rowCount == 0) {
@@ -305,7 +305,7 @@ module.exports = {
     changePassword,
     saveEmailCodeToDB,
     saveForgotPasswordCodeToDB,
-    checkResetCode,
+    checkResetCodeInDB,
     giveMeValidationCode,
     validateEmail,
     emailAlreadyValidated,

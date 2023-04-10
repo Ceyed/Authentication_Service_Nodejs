@@ -9,7 +9,7 @@ async function sendForgotPasswordCode(request, response) {
         // * Creating and saving random number in database
         const randomNumber = await saveForgotPasswordCodeToDB(user.email)
         if (randomNumber == false) {
-            return response.status(400).send('An error accrued during sending email, Please try again')
+            return response.status(400).json('An error accrued during sending email, Please try again')
         }
 
         // * Creating validation link to email it
@@ -18,12 +18,12 @@ async function sendForgotPasswordCode(request, response) {
 
         // * Email validation link to user
         await sendEmail(user.email, link, true)
-            .then((result) => response.status(200).send('Reset code sended. Please check your email'))
-            .catch((error) => response.status(400).send('An error accrued during sending email, Please try again'))
+            .then((result) => response.status(200).json('Reset code sended. Please check your email'))
+            .catch((error) => response.status(400).json('An error accrued during sending email, Please try again'))
     }
     catch (error) {
         // console.log(error)
-        // return response.status(400).send('An error accrued during sending email, Please try again')
+        // return response.status(400).json('An error accrued during sending email, Please try again')
         return false
     }
 }

@@ -13,23 +13,23 @@ async function login(request, response) {
 
         // * Validate user input
         if ((!username && !email) || !password) {
-            return response.status(400).send('username (or email) and password are required')
+            return response.status(400).json('username (or email) and password are required')
         }
 
         // * Regex validation
         const passwordRegexResult = await strongPasswordRegexValidation(password)
         if (passwordRegexResult == false) {
-            return response.status(400).send('Invalid password')
+            return response.status(400).json('Invalid password')
         }
 
 
         // * Validate if user exist in our database
         var user = await findUser(username, email)
         if (user == 'error') {
-            return response.status(400).send('An error accrued, Please try again')
+            return response.status(400).json('An error accrued, Please try again')
         }
         else if (!user) {
-            return response.status(409).send('User Not Founded. Please Register')
+            return response.status(409).json('User Not Founded. Please Register')
         }
 
         // * Check user's credentials
@@ -50,11 +50,11 @@ async function login(request, response) {
             response.status(200).json(user)
         }
         else {
-            response.status(400).send('Invalid Credentials')
+            response.status(400).json('Invalid Credentials')
         }
     }
     catch (error) {
-        // return response.status(400).send('An error accrued, Please try again')
+        // return response.status(400).json('An error accrued, Please try again')
         return false
     }
 }

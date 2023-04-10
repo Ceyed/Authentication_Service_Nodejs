@@ -9,6 +9,7 @@ A basic authentication service using NodeJs
 - [ ] 0.2: All responses should have status code
 - [x] 0.3: Make app.js clean, all functions should call one function only
 - [x] 0.4: More structure in folders (after TODO #0.3)
+- [ ] 0.5: ForgotPassword should regenerate Token
 
 <br/>
 
