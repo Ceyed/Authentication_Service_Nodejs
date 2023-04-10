@@ -6,7 +6,7 @@ A basic authentication service using NodeJs
 
 ## General TODO:
 - [ ] 0.1: A special status for 'expired token, needs to login again'
-- [ ] 0.2: All responses should have status code
+- [x] 0.2: All responses should have status code
 - [x] 0.3: Make app.js clean, all functions should call one function only
 - [x] 0.4: More structure in folders (after TODO #0.3)
 - [x] 0.5: Remove 'username' from 'users' table, no need to have 'username'
