@@ -31,7 +31,7 @@ async function sendForgotPasswordCode(request, response) {
 
         // * Email validation link to user
         await sendEmail(email, link, true)
-            .then((result) => response.status(200).json('Reset code sended. Please check your email'))
+            .then((result) => response.status(200).json('We will send email if there is any account registered with this email'))
             .catch((error) => response.status(400).json('An error accrued during sending email, Please try again'))
     }
     catch (error) {

@@ -87,10 +87,10 @@ new_password       |    post        |    resetToken, new password, confirm new p
 #### TODO
 - [x] 4.1: Create temp cypher and save it in database
 - [x] 4.2: Create a validation-link and email it to user
-- [ ] 4.3: After receiving the code, get a new password (and confirm email) from user
-- [ ] 4.4: Save 'new hashed password' in database (if both passwords are identical and strong)
-- [ ] 4.5: Remove the row in database after password resets
-- [ ] 4.6: Password Regex Validation: numb3r, special ch@r, UPPER, lower
+- [x] 4.3: After receiving the code, get a new password from user
+- [x] 4.4: Save 'new hashed password' in database (if both passwords are identical and strong)
+- [x] 4.5: Remove the row in database after password resets
+- [x] 4.6: Password Regex Validation: numb3r, special ch@r, UPPER, lower
 
 <br/>
 <br/>

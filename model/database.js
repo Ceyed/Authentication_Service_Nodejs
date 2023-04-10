@@ -147,9 +147,9 @@ async function saveToken(userId, token) {
 }
 
 
-async function changePassword(userId, password, email = null) {
+async function changePassword(password, email = null) {
     try {
-        const queryRespond = await runQuery(`UPDATE ${process.env.USERS_TABLE_NAME} SET password = '${password}' WHERE id = ${userId}`)
+        const queryRespond = await runQuery(`UPDATE ${process.env.USERS_TABLE_NAME} SET password = '${password}'`)
         if (!queryRespond) {
             return false
         }
@@ -220,23 +220,6 @@ async function saveForgotPasswordCodeToDB(email, resetToken) {
 }
 
 
-async function checkResetCodeInDB(email, reset_code) {
-    try {
-        const savedResetCode = await runQuery(`SELECT code FROM ${process.env.FORGOT_PASSWORD_TABLE_NAME} WHERE email = '${email}'`)
-        if (savedResetCode.rowCount == 0) {
-            return false
-        }
-        else {
-            return savedResetCode.rows[0].code == reset_code
-        }
-    }
-    catch (error) {
-        // console.log(error);
-        return false
-    }
-}
-
-
 async function giveMeValidationCode(userEmail) {
     try {
         // * Read saved code from database and return it
@@ -297,6 +280,26 @@ async function emailAlreadyValidated(userEmail) {
 }
 
 
+async function getEmailForgotPassword(token) {
+    try {
+        // * Check if email exists
+        const getEmail = await runQuery(`SELECT email FROM ${process.env.FORGOT_PASSWORD_TABLE_NAME} WHERE reset_token = '${token}'`)
+        if (getEmail.rowCount == 0) {
+            // * Not found token
+            return false
+        }
+        else {
+            // * Token founded
+            return getEmail.rows[0].email
+        }
+    }
+    catch (error) {
+        // console.log(error);
+        return false
+    }
+}
+
+
 module.exports = {
     findUser,
     newUser,
@@ -304,8 +307,8 @@ module.exports = {
     changePassword,
     saveEmailCodeToDB,
     saveForgotPasswordCodeToDB,
-    checkResetCodeInDB,
     giveMeValidationCode,
     validateEmail,
     emailAlreadyValidated,
+    getEmailForgotPassword,
 }

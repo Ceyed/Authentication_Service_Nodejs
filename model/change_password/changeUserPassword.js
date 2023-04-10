@@ -27,7 +27,7 @@ async function changeUserPassword(request, response) {
         if (await bcrypt.compare(old_password, user.password)) {
             // * Encrypt user's new password
             newEncryptedPassword = await bcrypt.hash(new_password, parseInt(process.env.SALT_ROUNDS))
-            if (await changePassword(user.id, newEncryptedPassword)) {
+            if (await changePassword(newEncryptedPassword, user.email)) {
                 return response.status(200).json('Password changed')
             }
             else {

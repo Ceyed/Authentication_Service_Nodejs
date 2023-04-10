@@ -10,7 +10,7 @@ const { register } = require('./model/register/register')
 const { login } = require('./model/login/login')
 const { changeUserPassword } = require('./model/change_password/changeUserPassword')
 const { sendForgotPasswordCode } = require('./model/forgot_password/sendForgotPasswordCode')
-const { checkResetCode } = require('./model/forgot_password/checkResetCode')
+// const { checkResetCode } = require('./model/forgot_password/checkResetCode')
 const { setNewPassword } = require('./model/forgot_password/setNewPassword')
 const { sendEmailValidationCode } = require('./model/validate_email/sendEmailValidationCode')
 const { validateEmailAddress } = require('./model/validate_email/validateEmailAddress')
@@ -55,7 +55,7 @@ app.post('/forgot_password', async (request, response) => {
         return response.status(400).json('An error accrued, Please try again')
     }
 })
-app.post('/new_password', auth, async function (request, response) {                                // TODO: Access directly to this request
+app.post('/new_password', async function (request, response) {                                // TODO: Access directly to this request
     try {
         setNewPassword(request, response)
     }
