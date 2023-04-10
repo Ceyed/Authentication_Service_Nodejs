@@ -7,7 +7,6 @@ require('dotenv').config()
 const createUsersTableQuery = `
     CREATE TABLE IF NOT EXISTS ${process.env.USERS_TABLE_NAME} (
         "id" SERIAL PRIMARY KEY,
-        "username" VARCHAR(20) NOT NULL,
         "email" VARCHAR(50) NOT NULL,
         "password" VARCHAR(200) NOT NULL,
         "validated" BOOL DEFAULT '0',
@@ -79,18 +78,10 @@ async function runQuery(queryCommand, insertData = null) {
     }
 }
 
-async function findUser(username = null, email = null, userId = null) {
+async function findUser(email = null, userId = null) {
     try {
         var queryCommand = `SELECT * FROM ${process.env.USERS_TABLE_NAME} `
-        if (username && email) {
-            // ! Will use in register form
-            queryCommand += `WHERE username = '${username}' OR email = '${email}'`
-        }
-        else if (username) {
-            // ! Will use in login form
-            queryCommand += `WHERE username = '${username}'`
-        }
-        else if (email) {
+        if (email) {
             // ! Will use in login form
             queryCommand += `WHERE email = '${email}'`
         }
@@ -115,7 +106,7 @@ async function findUser(username = null, email = null, userId = null) {
 
 async function newUser(newUserData) {
     try {
-        const user = await runQuery(`INSERT INTO ${process.env.USERS_TABLE_NAME} (username, email, password) VALUES ($1, $2, $3) RETURNING *`, newUserData)
+        const user = await runQuery(`INSERT INTO ${process.env.USERS_TABLE_NAME} (email, password) VALUES ($1, $2) RETURNING *`, newUserData)
         if (!user) {
             return false
         }
@@ -274,7 +265,7 @@ async function emailAlreadyValidated(userEmail) {
         }
     }
     catch (error) {
-        console.log(error);
+        // console.log(error);
         return false
     }
 }

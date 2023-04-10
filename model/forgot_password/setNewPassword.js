@@ -2,17 +2,16 @@ const bcrypt = require('bcryptjs')
 
 require('dotenv').config()
 
-const { findUser, changePassword, getEmailForgotPassword } = require('../database')
+const { changePassword, getEmailForgotPassword } = require('../database')
 const { strongPasswordRegexValidation } = require('../../utils/regexValidation')
 
 
 async function setNewPassword(request, response) {
     try {
-        // const user = await findUser(undefined, undefined, request.user.user_id)
         const { resetToken, newPassword, confirmNewPassword } = request.body
 
         if (!(resetToken && newPassword && confirmNewPassword) || (newPassword != confirmNewPassword)) {
-            return response.status(400).json('All input is required')
+            return response.status(400).json('Invalid inputs')
         }
 
         // * Regex validation
@@ -22,8 +21,6 @@ async function setNewPassword(request, response) {
 
         emailInToken = JSON.parse(Buffer.from(resetToken.split('.')[1], 'base64').toString()).email
         if (await getEmailForgotPassword(resetToken) != emailInToken) {
-            r = getEmailForgotPassword(resetToken)
-            log({ r, emailInToken })
             return response.status(400).json('Invalid reset token')
         }
 

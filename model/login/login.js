@@ -9,22 +9,17 @@ const { strongPasswordRegexValidation } = require('../../utils/regexValidation')
 
 async function login(request, response) {
     try {
-        const { username, email, password } = request.body
-
-        // * Validate user input
-        if ((!username && !email) || !password) {
-            return response.status(400).json('username (or email) and password are required')
-        }
+        const { email, password } = request.body
 
         // * Regex validation
+        const emailRegexResult = await emailRegexValidation(email)
         const passwordRegexResult = await strongPasswordRegexValidation(password)
-        if (passwordRegexResult == false) {
-            return response.status(400).json('Invalid password')
+        if (emailRegexResult == false || passwordRegexResult == false) {
+            return response.status(400).json('Wrong email or password')
         }
 
-
         // * Validate if user exist in our database
-        var user = await findUser(username, email)
+        var user = await findUser(email)
         if (user == 'error') {
             return response.status(400).json('An error accrued, Please try again')
         }

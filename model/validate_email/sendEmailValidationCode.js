@@ -15,13 +15,12 @@ async function sendEmailValidationCode(request, response) {
 
         // * Check if email already validated
         if (await emailAlreadyValidated(email) == true) {
-            return response.status(200).json('Validation code sended. Check your email')
+            return response.status(200).json('Email is already validated')
         }
 
         // * Creating and saving random number in database
         const randomNumber = await saveEmailCodeToDB(email)
         if (randomNumber == false) {
-            response.send('Error: Couldn\'t send email')
             return response.status(402).json('Validation code didn\'t send')
         }
 
@@ -30,7 +29,7 @@ async function sendEmailValidationCode(request, response) {
         const link = 'http://' + host + '/validate_email?email=' + email + '&validation_code=' + randomNumber
 
         // * Email validation link to user
-        let sendEmailResponse
+        var sendEmailResponse
         await sendEmail(email, link)
             .then((result) => sendEmailResponse = 'Validation code sended. Check your email')
             .catch((error) => sendEmailResponse = 'Validation code didn\'t send')

@@ -9,7 +9,7 @@ A basic authentication service using NodeJs
 - [ ] 0.2: All responses should have status code
 - [x] 0.3: Make app.js clean, all functions should call one function only
 - [x] 0.4: More structure in folders (after TODO #0.3)
-- [ ] 0.5: Remove 'username' from 'users' table, no need to have 'username'
+- [x] 0.5: Remove 'username' from 'users' table, no need to have 'username'
 
 <br/>
 
@@ -20,7 +20,7 @@ if not, return false
 
 Requests           |    Method      |     Input                         |   Returns
 -------------------|----------------|-----------------------------------|------------------
-register           |    post        |    username, email, password      |  token or false
+register           |    post        |    email, password                |  token or false
 
 <br/>
 
@@ -39,9 +39,9 @@ Gets ('username' || 'email') && 'password'
 return token if user founded
 otherwise return false
 
-Requests           |    Method      |     Input                         |   Returns
--------------------|----------------|-----------------------------------|------------------
-login              |    post        |    username or email, password    |  token or false
+Requests           |    Method      |     Input                 |   Returns
+-------------------|----------------|---------------------------|------------------
+login              |    post        |    email, password        |  token or false
 
 <br/>
 
@@ -79,7 +79,7 @@ save 'new hashed password' to database
 
 Requests           |    Method      |     Input                                                 |   Returns
 -------------------|----------------|-----------------------------------------------------------|------------------
-forgot_password    |    post        |    user email (email resetToken)                          |  true or false
+forgot_password    |    post        |    email                                                  |  true or false
 new_password       |    post        |    resetToken, new password, confirm new password         |  true or false
 
 <br/>
