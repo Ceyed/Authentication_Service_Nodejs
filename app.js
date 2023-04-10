@@ -47,17 +47,9 @@ app.post('/change_password', auth, async (request, response) => {
 })
 
 // ! Forgot Password
-app.post('/forgot_password', auth, async (request, response) => {
+app.post('/forgot_password', async (request, response) => {
     try {
         sendForgotPasswordCode(request, response)
-    }
-    catch (error) {
-        return response.status(400).json('An error accrued, Please try again')
-    }
-})
-app.post('/check_resetcode', auth, async function (request, response) {
-    try {
-        checkResetCode(request, response)
     }
     catch (error) {
         return response.status(400).json('An error accrued, Please try again')
@@ -73,7 +65,7 @@ app.post('/new_password', auth, async function (request, response) {            
 })
 
 // ! Email Validation
-app.post('/send_evc', async (request, response) => {
+app.post('/send_evc', auth, async (request, response) => {
     try {
         sendEmailValidationCode(request, response)
     }
@@ -81,7 +73,7 @@ app.post('/send_evc', async (request, response) => {
         return response.status(400).json('An error accrued, Please try again')
     }
 })
-app.get('/validate_email', async function (request, response) {
+app.get('/validate_email', auth, async function (request, response) {
     try {
         validateEmailAddress(request, response, 'get')
     }
@@ -89,7 +81,7 @@ app.get('/validate_email', async function (request, response) {
         return response.status(400).json('An error accrued, Please try again')
     }
 })
-app.post('/validate_email', async function (request, response) {
+app.post('/validate_email', auth, async function (request, response) {
     try {
         validateEmailAddress(request, response, 'post')
     }

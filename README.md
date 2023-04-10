@@ -9,7 +9,7 @@ A basic authentication service using NodeJs
 - [ ] 0.2: All responses should have status code
 - [x] 0.3: Make app.js clean, all functions should call one function only
 - [x] 0.4: More structure in folders (after TODO #0.3)
-- [ ] 0.5: ForgotPassword should regenerate Token
+- [ ] 0.5: Remove 'username' from 'users' table, no need to have 'username'
 
 <br/>
 
@@ -41,7 +41,7 @@ otherwise return false
 
 Requests           |    Method      |     Input                         |   Returns
 -------------------|----------------|-----------------------------------|------------------
-login              |    post        |    username || email, password    |  token or false
+login              |    post        |    username or email, password    |  token or false
 
 <br/>
 
@@ -77,21 +77,20 @@ Send user an email containing a link and a code
 in either way, after receiving the code, get a new password from user
 save 'new hashed password' to database
 
-Requests           |    Method      |     Input        |   Returns
--------------------|----------------|------------------|------------------
-forgot_password    |    post        |    - (token)     |  true or false
-check_resetcode    |    post        |    reset code    |  true or false
-new_password       |    post        |    new password  |  true or false
+Requests           |    Method      |     Input                                                 |   Returns
+-------------------|----------------|-----------------------------------------------------------|------------------
+forgot_password    |    post        |    user email (email resetToken)                          |  true or false
+new_password       |    post        |    resetToken, new password, confirm new password         |  true or false
 
 <br/>
 
 #### TODO
-- [x] 4.1: Create temp code and save it in database
-- [x] 4.2: Create a validation-code and email it to user
-- [x] 4.3: After receiving the code, get a new password from user
-- [x] 4.4: Save 'new hashed password' in database
-- [x] 4.5: Remove the row in database after password resets
-- [x] 4.6: Password Regex Validation: numb3r, special ch@r, UPPER, lower
+- [x] 4.1: Create temp cypher and save it in database
+- [x] 4.2: Create a validation-link and email it to user
+- [ ] 4.3: After receiving the code, get a new password (and confirm email) from user
+- [ ] 4.4: Save 'new hashed password' in database (if both passwords are identical and strong)
+- [ ] 4.5: Remove the row in database after password resets
+- [ ] 4.6: Password Regex Validation: numb3r, special ch@r, UPPER, lower
 
 <br/>
 <br/>
@@ -113,3 +112,10 @@ validate_email     |    post        |    validation_code, token     |  true or f
 - [x] 5.2: Create a validation-link and email it to user along with the code itself
 - [x] 5.3: After receiving the code (in either way) email gets validate
 - [x] 5.4: Remove the row in database after email validated
+
+<br/>
+<hr/>
+<br/>
+
+## In Future:
+- Make a blacklist of temp-email services

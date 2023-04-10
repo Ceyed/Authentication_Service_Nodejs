@@ -14,23 +14,23 @@ async function register(request, response) {
 
         // * Validate user input
         if (!(username && password && email)) {
-            return response.status(400).send('All input is required')
+            return response.status(400).json('All input is required')
         }
 
         // * Regex validation
         const emailRegexResult = await emailRegexValidation(email)
         const passwordRegexResult = await strongPasswordRegexValidation(password)
         if (emailRegexResult == false || passwordRegexResult == false) {
-            return response.status(400).send('Invalid Inputs')
+            return response.status(400).json('Wrong email or password')
         }
 
         // * check if user already exist
         const oldUser = await findUser(username, email)
         if (oldUser == 'error') {
-            return response.status(400).send('An error accrued, Please try again')
+            return response.status(400).json('An error accrued, Please try again')
         }
         else if (oldUser) {
-            return response.status(409).send('User Already Exist. Please Login')
+            return response.status(409).json('User Already Exist. Please Login')
         }
 
         // * Encrypt user password
@@ -39,15 +39,15 @@ async function register(request, response) {
         // * Create user in our database
         var user = await newUser([username, email.toLowerCase(), encryptedPassword])
         if (!user) {
-            return response.status(400).send('Couldn\'t create new user')
+            return response.status(400).json('Couldn\'t create new user')
         }
 
         // * Create token
         const token = jwt.sign(
             { user_id: user.id, email },
-            process.env.TOKEN_KEY,
+            process.env.ACCOUNT_TOKEN_KEY,
             {
-                expiresIn: process.env.TOKEN_EXPIRE_TIME,
+                expiresIn: process.env.ACCOUNT_TOKEN_EXPIRE_TIME,
             }
         )
 
@@ -55,14 +55,14 @@ async function register(request, response) {
         user = await saveToken(user.id, token)
 
         // * Email validation
-        await sendEmailValidationCode(request, response, email)                                   // TODO: Can it be NOT await?
+        sendEmailValidationCode(request, response, email)
 
         // * return new user
         response.status(201).json(user)
     }
     catch (error) {
         // console.log(error)
-        // return response.status(400).send('An error accrued, Please try again')
+        // return response.status(400).json('An error accrued, Please try again')
         return false
     }
 }

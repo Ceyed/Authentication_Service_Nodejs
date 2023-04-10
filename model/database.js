@@ -4,15 +4,6 @@ require('dotenv').config()
 
 // * Define create table query
 // TODO: "modified_at" does not updating data in db
-const createValidateTableQuery = `
-    CREATE TABLE IF NOT EXISTS ${process.env.VALIDATE_TABLE_NAME} (
-        "id" SERIAL PRIMARY KEY,
-        "email" VARCHAR(50) NOT NULL,
-        "code" VARCHAR(8) NOT NULL,
-        "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        "modified_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )`
-
 const createUsersTableQuery = `
     CREATE TABLE IF NOT EXISTS ${process.env.USERS_TABLE_NAME} (
         "id" SERIAL PRIMARY KEY,
@@ -25,11 +16,20 @@ const createUsersTableQuery = `
         "modified_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`
 
+const createValidateTableQuery = `
+    CREATE TABLE IF NOT EXISTS ${process.env.VALIDATE_TABLE_NAME} (
+        "id" SERIAL PRIMARY KEY,
+        "email" VARCHAR(50) NOT NULL,
+        "code" VARCHAR(8) NOT NULL,
+        "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        "modified_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`
+
 const createForgotPasswordTableQuery = `
     CREATE TABLE IF NOT EXISTS ${process.env.FORGOT_PASSWORD_TABLE_NAME} (
         "id" SERIAL PRIMARY KEY,
         "email" VARCHAR(50) NOT NULL,
-        "code" VARCHAR(8) DEFAULT '0',
+        "reset_token" VARCHAR(200) DEFAULT '0',
         "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         "modified_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`
@@ -193,26 +193,25 @@ async function saveEmailCodeToDB(email) {
 }
 
 
-async function saveForgotPasswordCodeToDB(email) {
+async function saveForgotPasswordCodeToDB(email, resetToken) {
     try {
         // * Check if email already exists
-        const randomNumber = (Math.floor(Math.random() * 100000000) + 100000000).toString().substring(1)
         const existenceResponse = await runQuery(`SELECT COUNT(*) FROM ${process.env.FORGOT_PASSWORD_TABLE_NAME} WHERE email = '${email}'`)
         if (existenceResponse.rows[0].count == 0) {
             // * Not founded | Insert new row in database
-            const insertToDBResponse = await runQuery(`INSERT INTO ${process.env.FORGOT_PASSWORD_TABLE_NAME} ("email", "code") VALUES ('${email}', '${randomNumber}')`)
+            const insertToDBResponse = await runQuery(`INSERT INTO ${process.env.FORGOT_PASSWORD_TABLE_NAME} ("email", "reset_token") VALUES ('${email}', '${resetToken}')`)
             if (!insertToDBResponse) {
                 return false
             }
         }
         else {
             // * Founded | Update row
-            const updateRowDBQueryResponse = await runQuery(`UPDATE ${process.env.FORGOT_PASSWORD_TABLE_NAME} SET code = '${randomNumber}' WHERE email = '${email}'`)
+            const updateRowDBQueryResponse = await runQuery(`UPDATE ${process.env.FORGOT_PASSWORD_TABLE_NAME} SET reset_token = '${resetToken}' WHERE email = '${email}'`)
             if (!updateRowDBQueryResponse) {
                 return false
             }
         }
-        return randomNumber
+        return true
     }
     catch (error) {
         // console.log(error);

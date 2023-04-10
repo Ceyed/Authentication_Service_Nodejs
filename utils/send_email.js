@@ -39,7 +39,7 @@ async function sendEmail(receiver, validationLink, forgotPassword = false) {
         if (forgotPassword) {
             code = validationLink.split('&reset_code=')[1]
             emailSubject = 'Reset Password'
-            emailText = '<h3> Hello There <br> Please Enter this code: </h3><h2>' + code + '</h2><h3> Respectfully <br> Ceyed | https://github.com/Ceyed <br></h3>'
+            emailText = '<h3> Hello There <br> Please Click link bellow to change your password: </h3><h2><a href=' + validationLink + '>Click here to change your password</a></h2><h3> Respectfully <br> Ceyed | https://github.com/Ceyed <br></h3>'
         }
         else {
             code = validationLink.split('&validation_code=')[1]

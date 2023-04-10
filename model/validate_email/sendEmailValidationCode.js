@@ -30,9 +30,11 @@ async function sendEmailValidationCode(request, response) {
         const link = 'http://' + host + '/validate_email?email=' + email + '&validation_code=' + randomNumber
 
         // * Email validation link to user
+        let sendEmailResponse
         await sendEmail(email, link)
-            .then((result) => response.status(200).json('Validation code sended. Check your email'))
-            .catch((error) => response.status(403).json('Validation code didn\'t send'))
+            .then((result) => sendEmailResponse = 'Validation code sended. Check your email')
+            .catch((error) => sendEmailResponse = 'Validation code didn\'t send')
+        return sendEmailResponse
     }
     catch (error) {
         // console.log(error)
