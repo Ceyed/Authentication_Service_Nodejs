@@ -10,10 +10,10 @@ async function changeUserPassword(request, response) {
     try {
         const user = await findUser(undefined, request.user.user_id)
 
-        const { oldPassword, newPassword } = request.body
+        const { oldPassword, newPassword, confirmNewPassword } = request.body
 
         // * Check if passwords are identical
-        if (oldPassword == newPassword) {
+        if ((oldPassword == newPassword) || (newPassword != confirmNewPassword)) {
             return response.status(400).json('Invalid Credentials')
         }
 

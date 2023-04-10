@@ -4,20 +4,20 @@ const { emailRegexValidation, emailCodeRegexValidation } = require('../../utils/
 
 async function validateEmailAddress(request, response, method) {
     try {
-        var email
-        var validation_code
+        let email
+        let validationCode
         if (method == 'post') {
             email = request.body.email
-            validation_code = request.body.validationCode
+            validationCode = request.body.validationCode
         }
         else {
             email = request.query.email
-            validation_code = request.query.validation_code
+            validationCode = request.query.validationCode
         }
 
         // * Regex validation
         const emailRegexResult = await emailRegexValidation(email)
-        const codeRegexResult = await emailCodeRegexValidation(validation_code)
+        const codeRegexResult = await emailCodeRegexValidation(validationCode)
         if (emailRegexResult == false || codeRegexResult == false) {
             return response.status(400).json('Invalid email or validation code')
         }
@@ -30,7 +30,7 @@ async function validateEmailAddress(request, response, method) {
         }
 
         // * Check saved validation code to given validation code
-        if (savedValidationCode == validation_code) {
+        if (savedValidationCode == validationCode) {
             // * Activate email
             if (await validateEmail(email) == true) {
                 return response.status(200).json('Email validated')

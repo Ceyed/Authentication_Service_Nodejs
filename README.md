@@ -10,6 +10,7 @@ A basic authentication service using NodeJs
 - [x] 0.3: Make app.js clean, all functions should call one function only
 - [x] 0.4: More structure in folders (after TODO #0.3)
 - [x] 0.5: Remove 'username' from 'users' table, no need to have 'username'
+- [ ] 0.6: Add api version to requests
 
 <br/>
 
@@ -68,6 +69,7 @@ change_password    |    post        |    token, old_password, new_password  |  t
 - [x] 3.2: Password Regex Validation: numb3r, special ch@r, UPPER, lower
 - [x] 3.3: 'Saved password' and 'hashed old password' should be identical
 - [x] 3.4: Save 'hashed new password'
+- [x] 3.5: 'confirm password' and it's validation are needed
 
 <br/>
 <br/>
