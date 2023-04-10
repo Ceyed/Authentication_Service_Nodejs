@@ -30,14 +30,17 @@ async function sendForgotPasswordCode(request, response) {
         const link = 'http://' + host + '/confirm?reset_token=' + resetToken                                            // TODO: Update url
 
         // * Email validation link to user
-        await sendEmail(email, link, true)
-            .then((result) => response.status(200).json('We will send email if there is any account registered with this email'))
-            .catch((error) => response.status(400).json('An error accrued during sending email, Please try again'))
+        if (await sendEmail(email, link, true)) {
+            response.status(200).json('We will send email if there is any account registered with this email')
+        }
+        else {
+            response.status(400).json('An error accrued during sending email, Please try again')
+        }
     }
     catch (error) {
-        // console.log(error)
-        // return response.status(400).json('An error accrued during sending email, Please try again')
-        return false
+        console.log(error)
+        return response.status(400).json('An error accrued during sending email, Please try again')
+        // return false
     }
 }
 

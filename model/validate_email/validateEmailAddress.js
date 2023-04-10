@@ -2,15 +2,15 @@ const { giveMeValidationCode, validateEmail } = require('../database')
 const { emailRegexValidation, emailCodeRegexValidation } = require('../../utils/regexValidation')
 
 
-async function validateEmailAddress(request, response, method) {
+async function validateEmailAddress(request, response) {
     try {
         let email
         let validationCode
-        if (method == 'post') {
+        try {
             email = request.body.email
             validationCode = request.body.validationCode
         }
-        else {
+        catch {
             email = request.query.email
             validationCode = request.query.validationCode
         }

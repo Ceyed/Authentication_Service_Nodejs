@@ -50,7 +50,8 @@ async function register(request, response) {
         user = await saveToken(user.id, token)
 
         // * Email validation
-        sendEmailValidationCode(request, response, email)
+        request.silenceResponse = true
+        sendEmailValidationCode(request, response)
 
         // * return new user
         response.status(201).json(user)

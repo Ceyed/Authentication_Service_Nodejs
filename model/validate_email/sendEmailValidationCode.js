@@ -30,10 +30,19 @@ async function sendEmailValidationCode(request, response) {
 
         // * Email validation link to user
         var sendEmailResponse
-        await sendEmail(email, link)
-            .then((result) => sendEmailResponse = 'Validation code sended. Check your email')
-            .catch((error) => sendEmailResponse = 'Validation code didn\'t send')
-        return sendEmailResponse
+        if (await sendEmail(email, link)) {
+            sendEmailResponse = 'We will send email if there is any account registered with this email'
+        }
+        else {
+            sendEmailResponse = 'An error accrued during sending email, Please try again'
+        }
+
+        if (!request.silenceResponse) {
+            return response.status(200).json(sendEmailResponse)
+        }
+        else {
+            return
+        }
     }
     catch (error) {
         // console.log(error)

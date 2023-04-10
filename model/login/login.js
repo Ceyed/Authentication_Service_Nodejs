@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
 const { findUser, saveToken } = require('../database')
-const { strongPasswordRegexValidation } = require('../../utils/regexValidation')
+const { emailRegexValidation, strongPasswordRegexValidation } = require('../../utils/regexValidation')
 
 
 async function login(request, response) {
@@ -49,8 +49,9 @@ async function login(request, response) {
         }
     }
     catch (error) {
-        // return response.status(400).json('An error accrued, Please try again')
-        return false
+        console.log(error)
+        return response.status(400).json('An error accrued, Please try again')
+        // return false
     }
 }
 

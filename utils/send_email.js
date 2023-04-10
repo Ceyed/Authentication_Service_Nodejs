@@ -56,11 +56,11 @@ async function sendEmail(receiver, validationLink, forgotPassword = false) {
         }
 
         // * Send email
-        const result = await transport.sendMail(mailOptions)
-        return result
+        // const result = await transport.sendMail(mailOptions)
+        return await transport.sendMail(mailOptions)
     }
     catch (error) {
-        return error
+        return false
     }
 }
 

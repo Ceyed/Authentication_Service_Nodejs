@@ -15,9 +15,9 @@ A basic authentication service using NodeJs
 <br/>
 
 ## 1. Register
-Gets 'username' && 'email' && 'password'
-if user registered, return user + token
-if not, return false
+Gets 'username' && 'email' && 'password' <br/>
+if user registered, return user + token <br/>
+if not, return false <br/>
 
 Requests           |    Method      |     Input                         |   Returns
 -------------------|----------------|-----------------------------------|------------------
@@ -36,9 +36,9 @@ register           |    post        |    email, password                |  token
 <br/>
 
 ## 2. Login
-Gets ('username' || 'email') && 'password'
-return token if user founded
-otherwise return false
+Gets ('username' || 'email') && 'password' <br/>
+return token if user founded <br/>
+otherwise return false <br/>
 
 Requests           |    Method      |     Input                 |   Returns
 -------------------|----------------|---------------------------|------------------
@@ -54,8 +54,8 @@ login              |    post        |    email, password        |  token or fals
 <br/>
 
 ## 3. Change Password
-Gets 'old password' && 'new password'
-return true || false
+Gets 'old password' && 'new password' <br/>
+return true || false <br/>
 
 Requests           |    Method      |     Input                             |   Returns
 -------------------|----------------|---------------------------------------|------------------
@@ -75,9 +75,9 @@ change_password    |    post        |    token, old_password, new_password  |  t
 <br/>
 
 ## 4. Forgot Password
-Send user an email containing a link and a code
-in either way, after receiving the code, get a new password from user
-save 'new hashed password' to database
+Send user an email containing a link and a code <br/>
+in either way, after receiving the code, get a new password from user <br/>
+save 'new hashed password' to database <br/>
 
 Requests           |    Method      |     Input                                                 |   Returns
 -------------------|----------------|-----------------------------------------------------------|------------------
@@ -98,8 +98,8 @@ new_password       |    post        |    resetToken, new password, confirm new p
 <br/>
 
 ## 5. Validate email
-Send user an email containing a link and a code
-in either way, after receiving the code, email validates
+Send user an email containing a link and a code <br/>
+in either way, after receiving the code, email validates <br/>
 
 Requests           |    Method      |     Input                     |   Returns
 -------------------|----------------|-------------------------------|------------------
