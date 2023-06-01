@@ -1,3 +1,5 @@
+const { PrismaClient } = require('@prisma/client')
+const prisma = new PrismaClient()
 const bcrypt = require('bcryptjs')
 
 require('dotenv').config()
@@ -19,14 +21,26 @@ async function setNewPassword(request, response) {
             return response.status(400).json('Invalid password')
         }
 
-        emailInToken = JSON.parse(Buffer.from(resetToken.split('.')[1], 'base64').toString()).email
-        if (await getEmailForgotPassword(resetToken) != emailInToken) {
+        var user = await prisma.user.findFirst({
+            where: {
+                reset_password_token: resetToken,
+            }
+        })
+        if (!user) {
             return response.status(400).json('Invalid reset token')
         }
 
-        // * Encrypt user's new password
-        newEncryptedPassword = await bcrypt.hash(newPassword, parseInt(process.env.SALT_ROUNDS))
-        if (await changePassword(newEncryptedPassword, emailInToken)) {
+        // * Encrypt and save user's new password
+        const updateResponse = await prisma.user.update({
+            where: {
+                id: user.id
+            },
+            data: {
+                password: await bcrypt.hash(newPassword, parseInt(process.env.SALT_ROUNDS)),
+                reset_password_token: null
+            }
+        })
+        if (updateResponse) {
             return response.status(200).json('Password changed')
         }
         else {
@@ -34,8 +48,9 @@ async function setNewPassword(request, response) {
         }
     }
     catch (error) {
-        // return response.status(400).json('An error accrued, Please try again')
-        return false
+        console.log(error)
+        return response.status(400).json('An error accrued, Please try again')
+        // return false
     }
 }
 

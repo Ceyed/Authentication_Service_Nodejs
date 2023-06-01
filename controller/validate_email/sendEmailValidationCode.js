@@ -1,5 +1,7 @@
+const { PrismaClient } = require('@prisma/client')
+const prisma = new PrismaClient()
 const { emailRegexValidation } = require('../../utils/regexValidation')
-const { emailAlreadyValidated, saveEmailCodeToDB } = require('../database')
+// const { emailAlreadyValidated, saveEmailCodeToDB } = require('../database')
 const { sendEmail } = require('../../utils/send_email')
 
 
@@ -14,19 +16,26 @@ async function sendEmailValidationCode(request, response) {
         }
 
         // * Check if email already validated
-        if (await emailAlreadyValidated(email) == true) {
+        const emailAlreadyValidated = await prisma.user.findUnique({
+            where: {
+                email: email,
+            },
+            select: {
+                validated: true,
+                email_validation_code: true,
+            }
+        })
+
+        if (emailAlreadyValidated.validated == true) {
             return response.status(200).json('Email is already validated')
         }
 
-        // * Creating and saving random number in database
-        const randomNumber = await saveEmailCodeToDB(email)
-        if (randomNumber == false) {
-            return response.status(402).json('Validation code didn\'t send')
-        }
+        // TODO: Recreating email_validation_code ? [Not now, Maybe later or when you are reading it Saeed :| ]
+        // TODO: AND maybe it should be deleted after validation ?
 
         // * Creating validation link to email it
         const host = request.header('host')
-        const link = 'http://' + host + '/validate_email?email=' + email + '&validation_code=' + randomNumber
+        const link = 'http://' + host + '/api/v1/validate_email?email=' + email + '&validation_code=' + emailAlreadyValidated.email_validation_code
 
         // * Email validation link to user
         var sendEmailResponse

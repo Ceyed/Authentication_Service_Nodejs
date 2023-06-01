@@ -2,13 +2,13 @@ const express = require("express");
 const router = express.Router();
 
 const auth = require('../middleware/auth')
-const { register } = require('../model/register/register')
-const { login } = require('../model/login/login')
-const { changeUserPassword } = require('../model/change_password/changeUserPassword')
-const { sendForgotPasswordCode } = require('../model/forgot_password/sendForgotPasswordCode')
-const { setNewPassword } = require('../model/forgot_password/setNewPassword')
-const { sendEmailValidationCode } = require('../model/validate_email/sendEmailValidationCode')
-const { validateEmailAddress } = require('../model/validate_email/validateEmailAddress')
+const { register } = require('../controller/register/register')
+const { login } = require('../controller/login/login')
+const { changeUserPassword } = require('../controller/change_password/changeUserPassword')
+const { sendForgotPasswordCode } = require('../controller/forgot_password/sendForgotPasswordCode')
+const { setNewPassword } = require('../controller/forgot_password/setNewPassword')
+const { sendEmailValidationCode } = require('../controller/validate_email/sendEmailValidationCode')
+const { validateEmailAddress } = require('../controller/validate_email/validateEmailAddress');
 
 
 router.post('/register', register)
@@ -20,12 +20,11 @@ router.post('/change_password', auth, changeUserPassword)
 router.post('/forgot_password', sendForgotPasswordCode)
 router.post('/new_password', setNewPassword)
 
-router.post('/send_evc', auth, sendEmailValidationCode)                     // TODO: \/
-// response.status(200).json(sendEmailValidationCode(request, response))
+router.post('/send_evc', auth, sendEmailValidationCode)
 router.get('/validate_email', validateEmailAddress)
 router.post('/validate_email', validateEmailAddress)
 
-router.use('*', (req, response) => {
+router.use('*', (request, response) => {
     response.status(404).json({
         success: 'false',
         message: 'Page not found',

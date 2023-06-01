@@ -1,9 +1,10 @@
+const { PrismaClient } = require('@prisma/client')
+const prisma = new PrismaClient()
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
 require('dotenv').config()
 
-const { findUser, newUser, saveToken } = require('../database')
 const { emailRegexValidation, strongPasswordRegexValidation } = require('../../utils/regexValidation')
 const { sendEmailValidationCode } = require('../validate_email/sendEmailValidationCode')
 
@@ -20,11 +21,12 @@ async function register(request, response) {
         }
 
         // * check if user already exist
-        const oldUser = await findUser(email)
-        if (oldUser == 'error') {
-            return response.status(400).json('An error accrued, Please try again')
-        }
-        else if (oldUser) {
+        const oldUser = await prisma.user.findUnique({
+            where: {
+                email: email
+            }
+        })
+        if (oldUser) {
             return response.status(409).json('User Already Exist. Please Login')
         }
 
@@ -32,33 +34,35 @@ async function register(request, response) {
         encryptedPassword = await bcrypt.hash(password, parseInt(process.env.SALT_ROUNDS))
 
         // * Create user in our database
-        var user = await newUser([email.toLowerCase(), encryptedPassword])
+        var user = await prisma.user.create({
+            data: {
+                email: email.toLowerCase(),
+                password: encryptedPassword,
+                email_validation_code: (Math.floor(Math.random() * 100000000) + 100000000).toString().substring(1)
+            }
+        })
         if (!user) {
             return response.status(400).json('Couldn\'t create new user')
         }
 
+        delete user.password
+
         // * Create token
-        const token = jwt.sign(
-            { user_id: user.id, email },
+        user.token = jwt.sign(
+            user,
             process.env.ACCOUNT_TOKEN_KEY,
             {
-                expiresIn: process.env.ACCOUNT_TOKEN_EXPIRE_TIME,
+                expiresIn: process.env.ACCOUNT_TOKEN_EXPIRE_TIME
             }
         )
 
-        // * save user token
-        user = await saveToken(user.id, token)
-
-        // * Email validation
-        request.silenceResponse = true
         sendEmailValidationCode(request, response)
 
-        // * return new user
         response.status(201).json(user)
     }
     catch (error) {
-        // console.log(error)
-        // return response.status(400).json('An error accrued, Please try again')
+        response.status(400).json("Bad request")
+        // console.log({ error })
         return false
     }
 }

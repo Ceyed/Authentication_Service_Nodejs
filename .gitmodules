@@ -1,0 +1,3 @@
+[submodule "model-prisma"]
+	path = model-prisma
+	url = https://github.com/Ceyed/prisma-model-for-asn.git

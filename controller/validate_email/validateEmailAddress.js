@@ -1,18 +1,19 @@
-const { giveMeValidationCode, validateEmail } = require('../database')
+const { PrismaClient } = require('@prisma/client')
+const prisma = new PrismaClient()
 const { emailRegexValidation, emailCodeRegexValidation } = require('../../utils/regexValidation')
 
 
 async function validateEmailAddress(request, response) {
     try {
-        let email
-        let validationCode
-        try {
+        var email
+        var validationCode
+        if (request.method == "POST") {
             email = request.body.email
             validationCode = request.body.validationCode
         }
-        catch {
+        else {
             email = request.query.email
-            validationCode = request.query.validationCode
+            validationCode = request.query.validation_code
         }
 
         // * Regex validation
@@ -23,16 +24,24 @@ async function validateEmailAddress(request, response) {
         }
 
         // * Read saved validation code in database
-        const savedValidationCode = await giveMeValidationCode(email)
-        if (savedValidationCode == false) {
-            // * Email not founded
-            return response.status(400).json('Email didn\'t validate')
-        }
+        const user = await prisma.user.findUnique({
+            where: {
+                email: email,
+            }
+        })
 
         // * Check saved validation code to given validation code
-        if (savedValidationCode == validationCode) {
+        if (user.email_validation_code == validationCode) {
             // * Activate email
-            if (await validateEmail(email) == true) {
+            const validateEmailResponse = await prisma.user.update({
+                where: {
+                    email: email,
+                },
+                data: {
+                    validated: true,
+                }
+            })
+            if (validateEmailResponse) {
                 return response.status(200).json('Email validated')
             }
             else {
@@ -44,7 +53,7 @@ async function validateEmailAddress(request, response) {
         }
     }
     catch (error) {
-        // console.log(error)
+        console.log(error)
         // return response.status(400).json('Email didn\'t validate')
         return false
     }

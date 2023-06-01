@@ -1,9 +1,10 @@
+const { PrismaClient } = require('@prisma/client')
+const prisma = new PrismaClient()
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
 require('dotenv').config()
 
-const { findUser, saveToken } = require('../database')
 const { emailRegexValidation, strongPasswordRegexValidation } = require('../../utils/regexValidation')
 
 
@@ -18,30 +19,29 @@ async function login(request, response) {
             return response.status(400).json('Wrong email or password')
         }
 
-        // * Validate if user exist in our database
-        var user = await findUser(email)
-        if (user == 'error') {
-            return response.status(400).json('An error accrued, Please try again')
-        }
-        else if (!user) {
+        // * Check if user exist in our database
+        const user = await prisma.user.findUnique({
+            where: {
+                email: email,
+            }
+        })
+        if (!user) {
             return response.status(409).json('User Not Founded. Please Register')
         }
 
         // * Check user's credentials
-        if (user && (await bcrypt.compare(password, user.password))) {
+        if (await bcrypt.compare(password, user.password)) {
             // * Create token
-            const token = jwt.sign(
-                { user_id: user.id, email },
+            delete user.password
+            user.token = jwt.sign(
+                user,
                 process.env.ACCOUNT_TOKEN_KEY,
                 {
                     expiresIn: process.env.ACCOUNT_TOKEN_EXPIRE_TIME,
                 }
             )
 
-            // * save user token
-            user = await saveToken(user.id, token)
-
-            // * user
+            // * Send user
             response.status(200).json(user)
         }
         else {
@@ -49,7 +49,6 @@ async function login(request, response) {
         }
     }
     catch (error) {
-        console.log(error)
         return response.status(400).json('An error accrued, Please try again')
         // return false
     }

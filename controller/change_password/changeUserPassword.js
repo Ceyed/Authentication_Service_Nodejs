@@ -1,14 +1,15 @@
+const { PrismaClient } = require('@prisma/client')
+const prisma = new PrismaClient()
 const bcrypt = require('bcryptjs')
 
 require('dotenv').config()
 
-const { findUser, changePassword } = require('../database')
 const { strongPasswordRegexValidation } = require('../../utils/regexValidation')
 
 
 async function changeUserPassword(request, response) {
     try {
-        const user = await findUser(undefined, request.user.user_id)
+        const user = request.user
 
         const { oldPassword, newPassword, confirmNewPassword } = request.body
 
@@ -25,9 +26,16 @@ async function changeUserPassword(request, response) {
 
         // * Check old passwords
         if (await bcrypt.compare(oldPassword, user.password)) {
-            // * Encrypt user's new password
-            newEncryptedPassword = await bcrypt.hash(newPassword, parseInt(process.env.SALT_ROUNDS))
-            if (await changePassword(newEncryptedPassword, user.email)) {
+            // * Encrypt and save user's new password
+            const passwordChangeResponse = await prisma.user.update({
+                where: {
+                    email: user.email
+                },
+                data: {
+                    password: await bcrypt.hash(newPassword, parseInt(process.env.SALT_ROUNDS))
+                },
+            })
+            if (passwordChangeResponse) {
                 return response.status(200).json('Password changed')
             }
             else {
@@ -40,6 +48,7 @@ async function changeUserPassword(request, response) {
     }
     catch (error) {
         // return response.status(400).json('An error accrued, Please try again')
+        console.log(error)
         return false
     }
 }
