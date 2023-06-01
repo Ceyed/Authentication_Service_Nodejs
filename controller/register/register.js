@@ -65,7 +65,7 @@ async function register(request, response) {
     }
     catch (error) {
         response.status(400).json("Bad request")
-        console.log({ error })
+        // console.log({ error })
         return false
     }
 }

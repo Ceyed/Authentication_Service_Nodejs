@@ -47,9 +47,8 @@ async function setNewPassword(request, response) {
         }
     }
     catch (error) {
-        console.log(error)
+        // console.log(error)
         return response.status(400).json('An error accrued, Please try again')
-        // return false
     }
 }
 

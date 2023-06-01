@@ -67,7 +67,7 @@ async function validateEmailAddress(request, response) {
         }
     }
     catch (error) {
-        console.log(error)
+        // console.log(error)
         // return response.status(400).json('Email didn\'t validate')
         return false
     }

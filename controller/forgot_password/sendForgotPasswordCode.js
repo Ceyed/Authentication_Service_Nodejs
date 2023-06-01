@@ -63,7 +63,6 @@ async function sendForgotPasswordCode(request, response) {
     catch (error) {
         // console.log(error)
         return response.status(400).json('An error accrued during sending email, Please try again')
-        // return false
     }
 }
 

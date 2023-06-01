@@ -48,7 +48,7 @@ async function changeUserPassword(request, response) {
     }
     catch (error) {
         // return response.status(400).json('An error accrued, Please try again')
-        console.log(error)
+        // console.log(error)
         return false
     }
 }
