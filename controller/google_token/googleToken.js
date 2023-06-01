@@ -26,8 +26,11 @@ async function googleToken(request, response) {
             }
         })
         if (user) {
-            googleLogin(user, response)
-            // console.log('Login Request Log')
+            const user = googleLogin(user, response)
+            if (user)
+                response.status(200).json(user)
+            else
+                response.status(400).json('An error accrued, Please try again')
         }
         else {
             const sub = googleResponse.data.sub
@@ -35,8 +38,12 @@ async function googleToken(request, response) {
             const picture = googleResponse.data.picture
             const email = googleResponse.data.email
 
-            googleRegister(sub, name, picture, email, response)
-            // console.log('Register Request Log')
+            const user = googleRegister(sub, name, picture, email, response)
+
+            if (user)
+                response.status(200).json(user)
+            else
+                response.status(400).json('An error accrued, Please try again')
         }
     }
     catch (error) {

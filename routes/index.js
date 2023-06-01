@@ -10,7 +10,7 @@ const { setNewPassword } = require('../controller/forgot_password/setNewPassword
 const { sendEmailValidationCode } = require('../controller/validate_email/sendEmailValidationCode')
 const { validateEmailAddress } = require('../controller/validate_email/validateEmailAddress');
 const { googleToken } = require('../controller/google_token/googleToken')
-
+const { walletLogin, walletVerify } = require('../controller/wallet_auth/walletAuth')
 
 router.post('/register', register)
 
@@ -21,11 +21,14 @@ router.post('/change_password', auth, changeUserPassword)
 router.post('/forgot_password', sendForgotPasswordCode)
 router.post('/new_password', setNewPassword)
 
-router.post('/send_evc', auth, sendEmailValidationCode)
+// router.post('/send_evc', auth, sendEmailValidationCode)
 router.get('/validate_email', validateEmailAddress)
 router.post('/validate_email', validateEmailAddress)
 
-router.post('/googleToken', googleToken)
+router.post('/google_token', googleToken)
+
+router.post('/wallet_login', walletLogin)
+router.post('/wallet_verify', walletVerify)
 
 router.use('*', (request, response) => {
     response.status(404).json({

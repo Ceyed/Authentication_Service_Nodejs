@@ -114,6 +114,42 @@ validate_email     |    post        |    validation_code, token     |  true or f
 - [x] 5.4: Remove the row in database after email validated
 
 <br/>
+<br/>
+
+## 6. Google Auth
+Send user will be able to register and login using Google Auth <br/>
+
+Requests           |    Method      |     Input           |   Returns
+-------------------|----------------|---------------------|------------------
+google_token       |    post        |     accessToken     |  user or false
+
+<br/>
+
+#### TODO
+- [x] 6.1: Get user's info using accessToken
+- [x] 6.2: Register or login user
+
+<br/>
+<br/>
+
+## 7. Authentication using wallet id
+Send user will be able to register and login using Google Auth <br/>
+
+Requests           |    Method      |     Input                     |   Returns
+-------------------|----------------|-------------------------------|----------------------------
+wallet_login       |    post        |     wallet_id                 |  message + nonce or false
+wallet_verify      |    post        |     wallet_id & signature     |  user or false
+
+<br/>
+
+#### TODO
+- [x] 7.1: Find or create user
+- [x] 7.2: Create and save nonce
+- [x] 7.3: Create the message and send it to user
+- [ ] 7.4: After receiving signature, break it and get wallet id
+- [ ] 7.5: If wallet ids are identical, login user
+
+<br/>
 <hr/>
 <br/>
 

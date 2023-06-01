@@ -50,11 +50,11 @@ async function googleRegister(sub, name, picture, email, response) {
             }
         )
 
-        response.status(201).json(user)
+        return user
     }
     catch (error) {
-        console.log({ error })
-        return response.status(400).json("Bad request")
+        // console.log({ error })
+        return false
     }
 }
 

@@ -21,11 +21,11 @@ async function googleLogin(user, response) {
         )
 
         // * Send user
-        response.status(200).json(user)
+        return user
     }
     catch (error) {
         // console.log(error)
-        return response.status(400).json('An error accrued, Please try again')
+        return false
     }
 }
 
