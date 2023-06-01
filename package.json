@@ -1,21 +1,21 @@
 {
-    "name": "service-user-authentication",
+    "name": "authentication_service_nodejs",
     "version": "1.0.0",
-    "description": "Service User Authentication",
-    "main": "app.js",
+    "description": "A basic authentication service using NodeJs",
+    "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/datalatte-ai/Service-User-Authentication.git"
+        "url": "git+https://github.com/Ceyed/Authentication_Service_Nodejs.git"
     },
     "author": "Ceyed",
-    "license": "UNLICENSED",
+    "license": "ISC",
     "bugs": {
-        "url": "https://github.com/datalatte-ai/Service-User-Authentication/issues"
+        "url": "https://github.com/Ceyed/Authentication_Service_Nodejs/issues"
     },
-    "homepage": "https://github.com/datalatte-ai/Service-User-Authentication#readme",
+    "homepage": "https://github.com/Ceyed/Authentication_Service_Nodejs#readme",
     "dependencies": {
         "@prisma/client": "^4.2.1",
         "bcrypt": "^5.0.1",
@@ -26,6 +26,7 @@
         "googleapis": "^105.0.0",
         "jsonwebtoken": "^8.5.1",
         "nodemailer": "^6.7.8",
+        "nodemailer-express-handlebars": "^5.0.0",
         "pg": "^8.7.3"
     },
     "devDependencies": {

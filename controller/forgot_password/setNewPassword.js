@@ -4,7 +4,6 @@ const bcrypt = require('bcryptjs')
 
 require('dotenv').config()
 
-const { changePassword, getEmailForgotPassword } = require('../database')
 const { strongPasswordRegexValidation } = require('../../utils/regexValidation')
 
 
