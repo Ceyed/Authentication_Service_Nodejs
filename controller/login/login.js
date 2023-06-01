@@ -26,7 +26,7 @@ async function login(request, response) {
             }
         })
         if (!user) {
-            return response.status(409).json('User Not Founded. Please Register')
+            return response.status(409).json('User Not Founded. Check your email or register')
         }
 
         // * Check user's credentials

@@ -21,13 +21,16 @@ async function register(request, response) {
         }
 
         // * check if user already exist
-        const oldUser = await prisma.user.findUnique({
-            where: {
-                email: email
+        const emailUsername = email.split('@')[0].replaceAll('.', '')
+        const allEmails = await prisma.user.findMany({
+            select: {
+                email: true
             }
         })
-        if (oldUser) {
-            return response.status(409).json('User Already Exist. Please Login')
+        for (let dbEmail of allEmails) {
+            if (dbEmail.email.split('@')[0].replaceAll('.', '') == emailUsername) {
+                return response.status(409).json('User Already Exist. Please Login')
+            }
         }
 
         // * Encrypt user password
@@ -62,7 +65,7 @@ async function register(request, response) {
     }
     catch (error) {
         response.status(400).json("Bad request")
-        // console.log({ error })
+        console.log({ error })
         return false
     }
 }

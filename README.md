@@ -8,6 +8,7 @@ A basic authentication service using NodeJs
 - [ ] 0.1: A special status for 'expired token, needs to login again'
 - [x] 0.2: All responses should have status code
 - [x] 0.3: Add api version to requests
+- [x] 0.4: Handle dots in emails in register request
 
 <br/>
 
