@@ -23,6 +23,20 @@ async function validateEmailAddress(request, response) {
             return response.status(400).json('Invalid email or validation code')
         }
 
+        // * Check if email already validated
+        const emailAlreadyValidated = await prisma.user.findUnique({
+            where: {
+                email: email,
+            },
+            select: {
+                validated: true,
+                email_validation_code: true,
+            }
+        })
+        if (emailAlreadyValidated.validated == true) {
+            return response.status(200).json('Email is already validated')
+        }
+
         // * Read saved validation code in database
         const user = await prisma.user.findUnique({
             where: {

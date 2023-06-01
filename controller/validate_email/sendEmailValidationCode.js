@@ -25,7 +25,6 @@ async function sendEmailValidationCode(request, response) {
                 email_validation_code: true,
             }
         })
-
         if (emailAlreadyValidated.validated == true) {
             return response.status(200).json('Email is already validated')
         }
