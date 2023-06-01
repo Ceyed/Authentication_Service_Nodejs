@@ -9,6 +9,7 @@ const { sendForgotPasswordCode } = require('../controller/forgot_password/sendFo
 const { setNewPassword } = require('../controller/forgot_password/setNewPassword')
 const { sendEmailValidationCode } = require('../controller/validate_email/sendEmailValidationCode')
 const { validateEmailAddress } = require('../controller/validate_email/validateEmailAddress');
+const { googleToken } = require('../controller/google_token/googleToken')
 
 
 router.post('/register', register)
@@ -23,6 +24,8 @@ router.post('/new_password', setNewPassword)
 router.post('/send_evc', auth, sendEmailValidationCode)
 router.get('/validate_email', validateEmailAddress)
 router.post('/validate_email', validateEmailAddress)
+
+router.post('/googleToken', googleToken)
 
 router.use('*', (request, response) => {
     response.status(404).json({

@@ -49,6 +49,10 @@ async function register(request, response) {
         }
 
         delete user.password
+        delete user.google_sub
+        delete user.email_validation_code
+        delete user.reset_password_token
+        delete user.google_image_url
 
         // * Create token
         user.token = jwt.sign(
